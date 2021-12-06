@@ -1,33 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.h                                             :+:      :+:    :+:   */
+/*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/12/05 23:16:00 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/06 20:09:24 by sserbin          ###   ########.fr       */
+/*   Created: 2021/12/06 20:06:07 by sserbin           #+#    #+#             */
+/*   Updated: 2021/12/06 20:09:15 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MAIN_H
-# define MAIN_H
+#include "main.h"
 
-# include <pthread.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <stdio.h>
+t_arg	setup_arg(int argc, char **argv)
+{
+	t_arg	arg;
 
-typedef struct s_arg {
-	unsigned int	nbr_philo;
-	int				t_die;
-	int				t_eat;
-	int				t_sleep;
-	int				nb_should_eat;
-}	t_arg;
-
-void			print_and_exit(char *message);
-unsigned int	ft_strlen(const char *str);
-t_arg			setup_arg(int argc, char **argv);
-
-#endif
+	arg.nbr_philo = atoi(argv[1]);
+	arg.t_die = atoi(argv[2]);
+	arg.t_eat = atoi(argv[3]);
+	arg.t_sleep = atoi(argv[4]);
+	if (argc == 6)
+		arg.nbr_philo = atoi(argv[5]);
+	return (arg);
+}
