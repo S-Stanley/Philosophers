@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/08 21:56:52 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/08 22:11:19 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/08 22:18:52 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,30 @@ char	*give_name(const unsigned int id)
 	if (id == 9)
 		return ("Epicure");
 	return ("Aristote");
+}
+
+void	*routine(void	*arg)
+{
+	printf("new philo thread created");
+	return (arg);
+}
+
+void	create_thread_and_join_for_philo(t_philo *philo)
+{
+	t_philo	*tmp;
+
+	tmp = philo;
+	while (philo)
+	{
+		pthread_create(&philo->philo, NULL, routine, NULL);
+		philo = philo->next;
+	}
+	philo = tmp;
+	while (philo)
+	{
+		pthread_join(philo->philo, NULL);
+		philo = philo->next;
+	}
 }
 
 t_philo	*setup_philo(t_arg arg)
