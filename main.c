@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/05 23:15:24 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/08 21:38:38 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/08 21:54:47 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,11 @@ typedef struct s_philo {
 	char			*name;
 	void			*next;
 }	t_philo;
+
+void	exit_programme(void)
+{
+	exit(0);
+}
 
 t_philo	*create_philo(unsigned int id, char *name)
 {
@@ -41,9 +46,9 @@ t_philo	*push_back_philo(t_philo *lst, unsigned int id, char *name)
 	if (!lst)
 		return (new);
 	tmp = lst;
-	while (lst)
+	while (lst->next)
 		lst = lst->next;
-	lst = new;
+	lst->next = new;
 	return (tmp);
 }
 
@@ -62,6 +67,19 @@ t_philo	*setup_philo(t_arg arg)
 	return (lst);
 }
 
+void	free_philo(t_philo *philo)
+{
+	t_philo	*tmp;
+
+	while (philo)
+	{
+		tmp = philo->next;
+		printf("%d %s\n", philo->id, philo->name);
+		free(philo);
+		philo = tmp;
+	}
+}
+
 int	main(int argc, char **argv)
 {
 	t_arg	arg;
@@ -71,5 +89,6 @@ int	main(int argc, char **argv)
 		print_and_exit("Wrong number or arguments");
 	arg = setup_arg(argc, argv);
 	philo = setup_philo(arg);
+	free_philo(philo);
 	return (0);
 }
