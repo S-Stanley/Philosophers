@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/06 20:27:58 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/06 20:31:22 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/08 20:05:47 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,22 +17,17 @@ int	ft_atoi(char *str)
 	unsigned int	i;
 
 	pos = 1;
-	if (str[0] == '-')
+	i = 0;
+	res = 0;
+	if (str[i] == '-')
 	{
 		i++;
 		pos = -1;
 	}
-	res = 0;
 	while (str[i])
 	{
-		res = res * (str[i] - 32);
+		res = res * 10 + (str[i] - '0');
 		i++;
 	}
-	return (res*pos);
-}
-
-
-int main(void)
-{
-	printf("%d\n", ft_atoi('5'));
+	return (res * pos);
 }
