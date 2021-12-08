@@ -6,11 +6,11 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/06 19:49:35 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/08 21:59:12 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/08 22:02:33 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../main.h"
+#include "main.h"
 
 void	print_and_exit(char *message)
 {

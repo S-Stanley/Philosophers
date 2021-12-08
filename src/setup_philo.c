@@ -6,11 +6,11 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/08 21:56:52 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/08 22:00:49 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/08 22:02:44 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../main.h"
+#include "main.h"
 
 t_philo	*create_philo(unsigned int id, char *name)
 {
