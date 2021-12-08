@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/08 21:56:52 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/08 22:02:44 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/08 22:09:02 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,31 @@ t_philo	*push_back_philo(t_philo *lst, unsigned int id, char *name)
 	return (tmp);
 }
 
+char	*give_name(const unsigned int id)
+{
+	if (id == 0)
+		return ("Aristote");
+	if (id == 1)
+		return ("Kant");
+	if (id == 2)
+		return ("Platon");
+	if (id == 3)
+		return ("Socrate");
+	if (id == 4)
+		return ("Nietzsche");
+	if (id == 5)
+		return ("Descartes");
+	if (id == 6)
+		return ("Confucius");
+	if (id == 7)
+		return ("Marx");
+	if (id == 8)
+		return ("Sarte");
+	if (id == 9)
+		return ("Epicure");
+	return ("Aristote");
+}
+
 t_philo	*setup_philo(t_arg arg)
 {
 	unsigned int	i;
@@ -51,7 +76,7 @@ t_philo	*setup_philo(t_arg arg)
 	lst = NULL;
 	while (i < arg.nbr_philo)
 	{
-		lst = push_back_philo(lst, i, "Aristote");
+		lst = push_back_philo(lst, i, give_name(i));
 		i++;
 	}
 	return (lst);
