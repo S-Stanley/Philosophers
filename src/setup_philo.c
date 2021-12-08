@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/08 21:56:52 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/08 22:09:02 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/08 22:11:19 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,17 +80,4 @@ t_philo	*setup_philo(t_arg arg)
 		i++;
 	}
 	return (lst);
-}
-
-void	free_philo(t_philo *philo)
-{
-	t_philo	*tmp;
-
-	while (philo)
-	{
-		tmp = philo->next;
-		printf("%d %s\n", philo->id, philo->name);
-		free(philo);
-		philo = tmp;
-	}
 }
