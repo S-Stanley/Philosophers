@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/05 23:16:00 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/08 22:21:17 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/09 20:34:27 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,11 @@ typedef struct s_arg {
 }	t_arg;
 
 typedef struct s_philo {
-	pthread_t		philo;
-	unsigned int	id;
-	char			*name;
-	void			*next;
+	pthread_t			philo;
+	unsigned int		id;
+	char				*name;
+	pthread_mutex_t		*mutex;
+	void				*next;
 }	t_philo;
 
 void			print_and_exit(char *message);
@@ -39,6 +40,8 @@ t_arg			setup_arg(int argc, char **argv);
 int				ft_atoi(char *str);
 void			exit_programme(char *message, t_philo *philo);
 void			free_philo(t_philo *philo);
-t_philo			*setup_philo(t_arg arg);
+t_philo			*setup_philo(t_arg arg, pthread_mutex_t *mutex);
+void			*routine(void	*arg);
+void			create_thread_and_join_for_philo(t_philo *philo);
 
 #endif
