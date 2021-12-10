@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mutex_philo_bug.c                                  :+:      :+:    :+:   */
+/*   mutex_philo_debug.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/12/10 15:15:02 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/10 17:30:28 by sserbin          ###   ########.fr       */
+/*   Created: 2021/12/10 17:30:55 by sserbin           #+#    #+#             */
+/*   Updated: 2021/12/10 17:54:27 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,22 @@
 #include <pthread.h>
 #include <stdio.h>
 
+pthread_mutex_t	g_mutex;
+
 typedef struct s_philo {
 	char		*name;
 	pthread_t	thread;
 	void		*next;
 }	t_philo;
 
-typedef struct s_root {
-	t_philo			*philo;
-	pthread_mutex_t	mutex;
-}	t_root;
-
 void	*increment(void *arg)
 {
-	t_root			*root;
-	void			*ptr;
+	t_philo		*philo;
 
-	root = (t_root *)arg;
-	pthread_mutex_lock(&root->mutex);
-	ptr = &root->mutex;
-	printf("Creating %s %p\n", root->philo->name, ptr);
-	pthread_mutex_unlock(&root->mutex);
+	philo = (t_philo *)arg;
+	pthread_mutex_lock(&g_mutex);
+	printf("Creating %s\n", philo->name);
+	pthread_mutex_unlock(&g_mutex);
 	return (arg);
 }
 
@@ -45,6 +40,7 @@ t_philo	*add_new(char *name, t_philo *philo)
 
 	new = malloc(sizeof(t_philo));
 	new->name = name;
+	new->thread = (long unsigned int)malloc(sizeof(pthread_t));
 	new->next = NULL;
 	if (!philo)
 		return (new);
@@ -55,14 +51,23 @@ t_philo	*add_new(char *name, t_philo *philo)
 	return (tmp);
 }
 
+t_philo	*dup_philo(char *name)
+{
+	t_philo	*new;
+
+	new = malloc(sizeof(t_philo));
+	new->name = name;
+	new->next = NULL;
+	return (new);
+}
+
 int	main(void)
 {
 	char			*names[] = {"Aristote", "Socrate", "Platon", "Kant", 0};
 	t_philo			*philo;
 	t_philo			*tmp;
 	unsigned int	i;
-	t_root			root;
-	void			*ptr;
+	t_philo			*dup;
 
 	i = 0;
 	philo = NULL;
@@ -72,15 +77,11 @@ int	main(void)
 		i++;
 	}
 	tmp = philo;
-	root.philo = philo;
-	ptr = &root.mutex;
-	pthread_mutex_init(&root.mutex, NULL);
-	printf("Adresse mutex %p\n", (void *)ptr);
+	pthread_mutex_init(&g_mutex, NULL);
 	while (philo)
 	{
-		root.philo = philo;
-		printf("Sending philo %s\n", philo->name);
-		pthread_create(&philo->thread, NULL, increment, &root);
+		dup = dup_philo(philo->name);
+		pthread_create(&philo->thread, NULL, increment, &dup);
 		philo = philo->next;
 	}
 	philo = tmp;
@@ -89,6 +90,6 @@ int	main(void)
 		pthread_join(philo->thread, NULL);
 		philo = philo->next;
 	}
-	pthread_mutex_destroy(&root.mutex);
+	pthread_mutex_destroy(&g_mutex);
 	return (0);
 }
