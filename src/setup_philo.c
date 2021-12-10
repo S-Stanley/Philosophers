@@ -5,79 +5,101 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/12/08 21:56:52 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/10 18:42:04 by sserbin          ###   ########.fr       */
+/*   Created: 2021/12/10 19:09:48 by sserbin           #+#    #+#             */
+/*   Updated: 2021/12/10 20:25:05 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-t_philo	*create_philo(unsigned int id, char *name)
+char	*give_name(const unsigned int id)
 {
-	t_philo	*lst;
-
-	lst = malloc(sizeof(t_philo));
-	if (!lst)
-		return (NULL);
-	lst->id = id;
-	lst->name = name;
-	lst->next = NULL;
-	return (lst);
+	if (id == 0)
+		return ("Aristote");
+	if (id == 1)
+		return ("Kant");
+	if (id == 2)
+		return ("Platon");
+	if (id == 3)
+		return ("Socrate");
+	if (id == 4)
+		return ("Nietzsche");
+	if (id == 5)
+		return ("Descartes");
+	if (id == 6)
+		return ("Confucius");
+	if (id == 7)
+		return ("Marx");
+	if (id == 8)
+		return ("Sarte");
+	if (id == 9)
+		return ("Epicure");
+	return ("Aristote");
 }
 
-t_philo	*push_back_philo(t_philo *lst, unsigned int id, char *name)
+t_philo	*add_philo(int id, char *name, t_philo *philo)
 {
-	t_philo	*new;
 	t_philo	*tmp;
+	t_philo	*new;
 
-	new = create_philo(id, name);
+	new = malloc(sizeof(t_philo));
 	if (!new)
-		exit_programme("Erreur malloc at create philo\n", lst);
-	if (!lst)
+		return (NULL);
+	new->id = id;
+	new->name = name;
+	new->next = NULL;
+	if (!philo)
 		return (new);
-	tmp = lst;
-	while (lst->next)
-		lst = lst->next;
-	lst->next = new;
+	tmp = philo;
+	while (philo->next)
+		philo = philo->next;
+	philo->next = new;
 	return (tmp);
 }
 
-void	create_thread_and_join_for_philo(t_prog prog, pthread_mutex_t *mutex)
+t_philo	*setup_philo(t_arg arg)
 {
-	t_philo		*tmp;
-	t_philo		*philo;
-	t_routine	root;
+	t_philo			*philo;
+	unsigned int	i;
 
-	philo = prog.philo;
+	philo = NULL;
+	i = 0;
+	while (i < arg.nbr_philo)
+	{
+		philo = add_philo((int)i, give_name(i), philo);
+		i++;
+	}
+	return (philo);
+}
+
+t_root	*create_new_root(t_philo *philo, pthread_mutex_t *mutex)
+{
+	t_root	*root;
+
+	root = malloc(sizeof(t_root));
+	root->name = philo->name;
+	root->id = philo->id;
+	root->g_mutex = mutex;
+	return (root);
+}
+
+void	setup_philo_routine(pthread_mutex_t *g_mutex, t_philo *philo)
+{
+	t_root			*root;
+	t_philo			*tmp;
+
+	root = NULL;
 	tmp = philo;
-	root.prog = prog;
-	root.global = 0;
-	(void)mutex;
 	while (philo)
 	{
-		root.this_philo = philo;
-		pthread_create(&philo->philo, NULL, routine, &root);
+		root = create_new_root(philo, g_mutex);
+		pthread_create(&philo->thread, NULL, routine, root);
 		philo = philo->next;
 	}
 	philo = tmp;
 	while (philo)
 	{
-		pthread_join(philo->philo, NULL);
+		pthread_join(philo->thread, NULL);
 		philo = philo->next;
-	}
-}
-
-t_philo	*setup_philo(t_arg arg)
-{
-	unsigned int	i;
-	t_philo			*lst;
-
-	i = 0;
-	lst = NULL;
-	while (i < arg.nbr_philo)
-	{
-		lst = push_back_philo(lst, i, give_name(i));
-		i++;
-	}
-	return (lst);
+	}	
 }

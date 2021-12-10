@@ -5,32 +5,27 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/12/05 23:15:24 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/10 18:36:24 by sserbin          ###   ########.fr       */
+/*   Created: 2021/12/10 17:55:36 by sserbin           #+#    #+#             */
+/*   Updated: 2021/12/10 20:27:16 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-int	g_global = 0;
-
 int	main(int argc, char **argv)
 {
+	pthread_mutex_t	g_mutex;
 	t_arg			arg;
-	t_prog			prog;
-	pthread_mutex_t	mutex;
+	t_philo			*philo;
 
 	if (argc != 4 && argc != 5)
-		print_and_exit("Wrong number or arguments");
+		print_and_exit("Wrong number or arguments\n");
 	arg = setup_arg(argc, argv);
-	prog.philo = setup_philo(arg);
+	philo = setup_philo(arg);
 	pthread_mutex_init(&g_mutex, NULL);
-	create_thread_and_join_for_philo(prog, &mutex);
+	setup_philo_routine(&g_mutex, philo);
 	pthread_mutex_destroy(&g_mutex);
+	free_philo(philo);
+	philo = malloc(5);
 	return (0);
 }
-
-/*
-	free_philo(prog.philo);
-	free(prog.mutex);
-*/
