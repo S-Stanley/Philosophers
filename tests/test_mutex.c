@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 17:55:36 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/10 18:25:04 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/10 18:26:50 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	*routine(void *arg)
 	pthread_mutex_lock(root->g_mutex);
 	printf("%s\n", root->name);
 	pthread_mutex_unlock(root->g_mutex);
+	free(root);
 	return (arg);
 }
 
