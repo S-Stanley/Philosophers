@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:29:35 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/10 20:42:13 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/10 21:07:16 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,6 @@ void			free_philo(t_philo *philo);
 char			*setup_philo_routine(pthread_mutex_t *g_mutex, t_philo *philo);
 t_philo			*setup_philo(t_arg arg);
 char			*free_root_and_return_null(t_root *root);
+void			*free_root_and_return(t_root *root);
 
 #endif

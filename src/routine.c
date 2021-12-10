@@ -6,17 +6,11 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:57:04 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/10 21:06:29 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/10 21:07:26 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
-
-void	*free_root_and_return(t_root *root)
-{
-	free(root);
-	return (NULL);
-}
 
 void	*routine(void *arg)
 {
