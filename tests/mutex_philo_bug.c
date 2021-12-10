@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mutex_philo.c                                      :+:      :+:    :+:   */
+/*   mutex_philo_bug.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/12/10 14:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/10 15:15:49 by sserbin          ###   ########.fr       */
+/*   Created: 2021/12/10 15:15:02 by sserbin           #+#    #+#             */
+/*   Updated: 2021/12/10 15:20:12 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,29 @@
 #include <pthread.h>
 #include <stdio.h>
 
-pthread_mutex_t	g_mutex;
-
-void	*increment(void *arg)
-{
-	char			*name;
-
-	name = (char *)arg;
-	pthread_mutex_lock(&g_mutex);
-	printf("Creating %s\n", name);
-	pthread_mutex_unlock(&g_mutex);
-	return (arg);
-}
-
 typedef struct s_philo {
 	char		*name;
 	pthread_t	thread;
 	void		*next;
 }	t_philo;
+
+typedef struct s_root {
+	t_philo			*philo;
+	pthread_mutex_t	mutex;
+}	t_root;
+
+void	*increment(void *arg)
+{
+	t_root			*root;
+	void			*ptr;
+
+	root = (t_root *)arg;
+	ptr = &root->mutex;
+	pthread_mutex_lock(&root->mutex);
+	printf("Creating %s %p\n", root->philo->name, ptr);
+	pthread_mutex_unlock(&root->mutex);
+	return (arg);
+}
 
 t_philo	*add_new(char *name, t_philo *philo)
 {
@@ -56,6 +61,8 @@ int	main(void)
 	t_philo			*philo;
 	t_philo			*tmp;
 	unsigned int	i;
+	t_root			root;
+	void			*ptr;
 
 	i = 0;
 	philo = NULL;
@@ -65,10 +72,14 @@ int	main(void)
 		i++;
 	}
 	tmp = philo;
-	pthread_mutex_init(&g_mutex, NULL);
+	root.philo = philo;
+	ptr = &root.mutex;
+	pthread_mutex_init(&root.mutex, NULL);
+	printf("Adresse mutex %p\n", (void *)ptr);
 	while (philo)
 	{
-		pthread_create(&philo->thread, NULL, increment, philo->name);
+		root.philo = philo;
+		pthread_create(&philo->thread, NULL, increment, &root);
 		philo = philo->next;
 	}
 	philo = tmp;
@@ -77,6 +88,6 @@ int	main(void)
 		pthread_join(philo->thread, NULL);
 		philo = philo->next;
 	}
-	pthread_mutex_destroy(&g_mutex);
+	pthread_mutex_destroy(&root.mutex);
 	return (0);
 }
