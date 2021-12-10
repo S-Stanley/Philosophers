@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 17:55:36 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/10 20:27:16 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/10 20:31:22 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,5 @@ int	main(int argc, char **argv)
 	setup_philo_routine(&g_mutex, philo);
 	pthread_mutex_destroy(&g_mutex);
 	free_philo(philo);
-	philo = malloc(5);
 	return (0);
 }
