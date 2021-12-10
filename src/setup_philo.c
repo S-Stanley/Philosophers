@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/08 21:56:52 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/10 14:51:21 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/10 18:42:04 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,31 +40,6 @@ t_philo	*push_back_philo(t_philo *lst, unsigned int id, char *name)
 		lst = lst->next;
 	lst->next = new;
 	return (tmp);
-}
-
-char	*give_name(const unsigned int id)
-{
-	if (id == 0)
-		return ("Aristote");
-	if (id == 1)
-		return ("Kant");
-	if (id == 2)
-		return ("Platon");
-	if (id == 3)
-		return ("Socrate");
-	if (id == 4)
-		return ("Nietzsche");
-	if (id == 5)
-		return ("Descartes");
-	if (id == 6)
-		return ("Confucius");
-	if (id == 7)
-		return ("Marx");
-	if (id == 8)
-		return ("Sarte");
-	if (id == 9)
-		return ("Epicure");
-	return ("Aristote");
 }
 
 void	create_thread_and_join_for_philo(t_prog prog, pthread_mutex_t *mutex)
