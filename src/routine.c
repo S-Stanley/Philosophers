@@ -6,20 +6,27 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:57:04 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/10 20:43:48 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/10 21:06:29 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
+
+void	*free_root_and_return(t_root *root)
+{
+	free(root);
+	return (NULL);
+}
 
 void	*routine(void *arg)
 {
 	t_root	*root;
 
 	root = (t_root *)arg;
-	pthread_mutex_lock(root->g_mutex);
+	if (pthread_mutex_lock(root->g_mutex) != 0)
+		return (free_root_and_return(root));
 	printf("creating philo %s with id %d\n", root->name, root->id);
-	pthread_mutex_unlock(root->g_mutex);
-	free(root);
-	return (arg);
+	if (pthread_mutex_unlock(root->g_mutex) != 0)
+		return (free_root_and_return(root));
+	return (free_root_and_return(root));
 }
