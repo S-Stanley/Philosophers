@@ -6,13 +6,13 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/08 21:56:52 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/09 20:34:40 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/10 14:51:21 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-t_philo	*create_philo(unsigned int id, char *name, pthread_mutex_t *mutex)
+t_philo	*create_philo(unsigned int id, char *name)
 {
 	t_philo	*lst;
 
@@ -21,17 +21,16 @@ t_philo	*create_philo(unsigned int id, char *name, pthread_mutex_t *mutex)
 		return (NULL);
 	lst->id = id;
 	lst->name = name;
-	lst->mutex = mutex;
 	lst->next = NULL;
 	return (lst);
 }
 
-t_philo	*push_back_philo(t_philo *lst, unsigned int id, char *name, pthread_mutex_t *mutex)
+t_philo	*push_back_philo(t_philo *lst, unsigned int id, char *name)
 {
 	t_philo	*new;
 	t_philo	*tmp;
 
-	new = create_philo(id, name, mutex);
+	new = create_philo(id, name);
 	if (!new)
 		exit_programme("Erreur malloc at create philo\n", lst);
 	if (!lst)
@@ -68,14 +67,21 @@ char	*give_name(const unsigned int id)
 	return ("Aristote");
 }
 
-void	create_thread_and_join_for_philo(t_philo *philo)
+void	create_thread_and_join_for_philo(t_prog prog, pthread_mutex_t *mutex)
 {
-	t_philo	*tmp;
+	t_philo		*tmp;
+	t_philo		*philo;
+	t_routine	root;
 
+	philo = prog.philo;
 	tmp = philo;
+	root.prog = prog;
+	root.global = 0;
+	(void)mutex;
 	while (philo)
 	{
-		pthread_create(&philo->philo, NULL, routine, philo);
+		root.this_philo = philo;
+		pthread_create(&philo->philo, NULL, routine, &root);
 		philo = philo->next;
 	}
 	philo = tmp;
@@ -86,7 +92,7 @@ void	create_thread_and_join_for_philo(t_philo *philo)
 	}
 }
 
-t_philo	*setup_philo(t_arg arg, pthread_mutex_t *mutex)
+t_philo	*setup_philo(t_arg arg)
 {
 	unsigned int	i;
 	t_philo			*lst;
@@ -95,7 +101,7 @@ t_philo	*setup_philo(t_arg arg, pthread_mutex_t *mutex)
 	lst = NULL;
 	while (i < arg.nbr_philo)
 	{
-		lst = push_back_philo(lst, i, give_name(i), mutex);
+		lst = push_back_philo(lst, i, give_name(i));
 		i++;
 	}
 	return (lst);
