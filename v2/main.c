@@ -1,24 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test_mutex.c                                       :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 17:55:36 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/10 18:26:50 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/10 18:30:55 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <stdlib.h>
-
-typedef struct s_root {
-	pthread_mutex_t	*g_mutex;
-	char			*name;
-}	t_root;
+#include "main.h"
 
 void	*routine(void *arg)
 {
