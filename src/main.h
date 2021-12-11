@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:29:35 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/10 21:07:16 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/11 20:13:16 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <unistd.h>
 # include <pthread.h>
 # include <stdlib.h>
+# include <sys/time.h>
 
 typedef struct s_root {
 	pthread_mutex_t	*g_mutex;
