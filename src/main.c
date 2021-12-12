@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 17:55:36 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/12 11:29:07 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/12 12:30:30 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,12 +75,12 @@ int	main(int argc, char **argv)
 		print_and_exit("Wrong number or arguments\n");
 	arg = setup_arg(argc, argv);
 	philo = setup_philo(arg);
-	fork = init_mutex(4);
+	fork = init_mutex(arg.nbr_philo);
 	if (!philo)
 		return (print_and_exit("Erreur malloc at setup_philo\n"));
 	if (pthread_mutex_init(&g_mutex, NULL) != 0)
 		return (print_and_exit("Error starting mutex\n"));
-	if (!setup_philo_routine(&g_mutex, philo, fork))
+	if (!setup_philo_routine(&g_mutex, philo, fork, arg))
 	{
 		free_philo(philo);
 		return (print_and_exit("Error while setting up routine"));
