@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:29:35 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/11 20:13:16 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/12 11:09:31 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,17 @@
 # include <stdlib.h>
 # include <sys/time.h>
 
+typedef struct s_dishes {
+	pthread_mutex_t	fork;
+	void			*next;
+	unsigned int	id;
+}	t_dishes;
+
 typedef struct s_root {
 	pthread_mutex_t	*g_mutex;
 	char			*name;
 	unsigned int	id;
+	t_dishes		*fork;
 }	t_root;
 
 typedef struct s_philo {
@@ -46,7 +53,7 @@ int				ft_atoi(char *str);
 unsigned int	ft_strlen(const char *str);
 void			*routine(void *arg);
 void			free_philo(t_philo *philo);
-char			*setup_philo_routine(pthread_mutex_t *g_mutex, t_philo *philo);
+char			*setup_philo_routine(pthread_mutex_t *g_mutex, t_philo *philo, t_dishes *fork);
 t_philo			*setup_philo(t_arg arg);
 char			*free_root_and_return_null(t_root *root);
 void			*free_root_and_return(t_root *root);
