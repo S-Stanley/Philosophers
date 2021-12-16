@@ -6,52 +6,28 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:57:04 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/12 13:53:03 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/15 01:02:39 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-void	philo_is_thinking(struct timeval time, int to_think, char *name)
+void	philo_is_thinking(int to_think, char *name, long long int timestamp_now, long long int timestamp_max)
 {
-	long int	time_to_think;
-
-	time_to_think = time.tv_usec + to_think;
-	printf("%d %s is thinking \n", time.tv_usec, name);
-	while (1)
-	{
-		gettimeofday(&time, NULL);
-		if (time.tv_usec > time_to_think)
-			break ;
-	}
+	(void)to_think;
+	printf("%lld %s is thinking \n", timestamp_max - timestamp_now, name);
 }
 
-void	philo_is_sleeping(struct timeval time, int to_sleep, char *name)
+void	philo_is_sleeping(int to_sleep, char *name, long long int timestamp_now, long long int timestamp_max)
 {
-	long int	time_to_sleep;
-
-	time_to_sleep = time.tv_usec + to_sleep;
-	printf("%d %s is sleeping \n", time.tv_usec, name);
-	while (1)
-	{
-		gettimeofday(&time, NULL);
-		if (time.tv_usec > time_to_sleep)
-			break ;
-	}
+	printf("%lld %s is sleeping \n", timestamp_max - timestamp_now, name);
+	usleep(to_sleep);
 }
 
-void	philo_is_eating(struct timeval time, int to_eat, t_root *root)
+void	philo_is_eating(int to_eat, t_root *root, long long int timestamp_now, long long int timestamp_max)
 {
-	long int	time_to_eat;
-
-	time_to_eat = time.tv_usec + to_eat;
-	printf("%d %s is eating \n", time.tv_usec, root->name);
-	while (1)
-	{
-		gettimeofday(&time, NULL);
-		if (time.tv_usec > time_to_eat)
-			break ;
-	}
+	printf("%lld %s is eating \n", timestamp_max - timestamp_now, root->name);
+	usleep(to_eat);
 }
 
 typedef struct s_couvert {
@@ -87,41 +63,102 @@ void	*routine(void *arg)
 {
 	t_root			*root;
 	struct timeval	time;
-	long int		time_to_die;
 	t_couvert		couvert;
-	int				time_start;
+	long long int	timestamp_now;
+	long long int	timestamp_max;
 
 	root = (t_root *)arg;
 	couvert = get_philo_fork(root->id, root->fork);
 	gettimeofday(&time, NULL);
+	timestamp_now = 0;
+	timestamp_now = timestamp_now + (long long int)time.tv_usec;
+	timestamp_max = timestamp_now + (long long int)root->arg.t_die;
+	while (1)
+	{
+		if (pthread_mutex_lock(&couvert.right->fork) != 0)
+			printf("ERROR MUTEX LOCK 0\n");
+		if (pthread_mutex_lock(&couvert.left->fork) != 0)
+			printf("ERROR MUTEX LOCK 1\n");
+		gettimeofday(&time, NULL);
+		printf("%lld %s has taken a fork\n",
+			timestamp_max - timestamp_now, root->name);
+		gettimeofday(&time, NULL);
+		timestamp_now = timestamp_now + (long long int)time.tv_usec;
+		timestamp_max = timestamp_now + (long long int)root->arg.t_die;
+		philo_is_eating(root->arg.t_eat, root, timestamp_now, timestamp_max);
+		printf("%lld %s is going to dropm fork\n",
+			timestamp_max - timestamp_now, root->name);
+		if (pthread_mutex_unlock(&couvert.right->fork) != 0)
+			printf("ERROR MUTEX UNLOCK 0\n");
+		if (pthread_mutex_unlock(&couvert.left->fork) != 0)
+			printf("ERROR MUTEX UNLOCK 1\n");
+		printf("%lld %s just dropped fork\n",
+			timestamp_max - timestamp_now, root->name);
+		gettimeofday(&time, NULL);
+		timestamp_now = timestamp_now + (long long int)time.tv_usec;
+		philo_is_sleeping(root->arg.t_sleep, root->name,
+			timestamp_now, timestamp_max);
+		gettimeofday(&time, NULL);
+		timestamp_now = timestamp_now + (long long int)time.tv_usec;
+		philo_is_thinking(1, root->name, timestamp_now, timestamp_max);
+		gettimeofday(&time, NULL);
+		timestamp_now = timestamp_now + (long long int)time.tv_usec;
+		usleep(200000);
+	}
+	printf("%lld %s just died\n", timestamp_max - timestamp_now, root->name);
+	return (free_root_and_return(root));
+}
+
+/*
+void	*routine(void *arg)
+{
+	t_root			*root;
+	struct timeval	time;
+	long int		time_to_die;
+	t_couvert		couvert;
+	int				time_start;
+	long long int	total;
+
+	root = (t_root *)arg;
+	couvert = get_philo_fork(root->id, root->fork);
+	total = 0;
+	gettimeofday(&time, NULL);
+	total = total + time.tv_usec;
 	time_to_die = time.tv_usec + root->arg.t_die;
 	while (1)
 	{
 		gettimeofday(&time, NULL);
-		time_start = time.tv_usec;
-		if (time.tv_usec > time_to_die)
-			break ;
+		total = total + (long long int)time.tv_usec;
+		time_start = total;
+		// if (time.tv_usec > time_to_die)
+		// 	break ;
 		gettimeofday(&time, NULL);
-		pthread_mutex_lock(&couvert.right->fork);
-		pthread_mutex_lock(&couvert.left->fork);
+		if (pthread_mutex_lock(&couvert.right->fork) != 0)
+			printf("ERROR MUTEX LOCK 0\n");
+		if (pthread_mutex_lock(&couvert.left->fork) != 0)
+			printf("ERROR MUTEX LOCK 1\n");
 		gettimeofday(&time, NULL);
-		printf("%d %s has taken a fork\n", time.tv_usec, root->name);
-		philo_is_eating(time, root->arg.t_eat, root);
-		gettimeofday(&time, NULL);
-		time_to_die = time.tv_usec + root->arg.t_die;
-		if (time.tv_usec > time_to_die)
-			break ;
-		gettimeofday(&time, NULL);
-		pthread_mutex_unlock(&couvert.right->fork);
-		pthread_mutex_unlock(&couvert.left->fork);
-		philo_is_sleeping(time, root->arg.t_sleep, root->name);
-		gettimeofday(&time, NULL);
-		if (time.tv_usec > time_to_die)
-			break ;
-		gettimeofday(&time, NULL);
-		philo_is_thinking(time, 1, root->name);
+		printf("%lld %s has taken a fork\n", time_to_die - total, root->name);
+		philo_is_eating(time, root->arg.t_eat, root, time_to_die);
+		printf("%s is going to dropm fork\n", root->name);
+		if (pthread_mutex_unlock(&couvert.right->fork) != 0)
+			printf("ERROR MUTEX UNLOCK 0\n");
+		if (pthread_mutex_unlock(&couvert.left->fork) != 0)
+			printf("ERROR MUTEX UNLOCK 1\n");
+		printf("%lld %s just dropped fork\n",  time_to_die - total, root->name);
+		time_to_die = total + root->arg.t_die;
+		// if (time.tv_usec > time_to_die)
+			// break ;
+		// gettimeofday(&time, NULL);
+		philo_is_sleeping(time, root->arg.t_sleep, root->name, time_to_die);
+		// gettimeofday(&time, NULL);
+		// if (time.tv_usec > time_to_die)
+		// 	break ;
+		// gettimeofday(&time, NULL);
+		philo_is_thinking(time, 1, root->name, time_to_die);
+		// usleep(10);
 	}
-	printf("%d %s just died\n", time.tv_usec, root->name);
+	printf("%ld %s just died\n", time_to_die - time.tv_usec, root->name);
 	return (free_root_and_return(root));
 }
 
@@ -141,8 +178,10 @@ void	*routine2(void *arg)
 		gettimeofday(&time, NULL);
 		if (time.tv_usec > time_to_die)
 			break ;
+		philo_is_sleeping(time, root->arg.t_sleep, root->name);
 		gettimeofday(&time, NULL);
 		philo_is_thinking(time, 1, root->name);
+		usleep(10);
 		gettimeofday(&time, NULL);
 		if (time.tv_usec > time_to_die)
 			break ;
@@ -159,8 +198,8 @@ void	*routine2(void *arg)
 		gettimeofday(&time, NULL);
 		pthread_mutex_unlock(&couvert.right->fork);
 		pthread_mutex_unlock(&couvert.left->fork);
-		philo_is_sleeping(time, root->arg.t_sleep, root->name);
 	}
 	printf("%d %s just died\n", time.tv_usec, root->name);
 	return (free_root_and_return(root));
 }
+*/

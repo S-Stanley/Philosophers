@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 19:09:48 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/12 12:52:53 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/13 01:40:09 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,18 +106,20 @@ char	*setup_philo_routine(pthread_mutex_t *g_mutex, t_philo *philo, t_dishes *fo
 		root = create_new_root(philo, g_mutex, fork, arg);
 		if (!root)
 			return (NULL);
-		if (choice)
-		{
-			if (pthread_create(&philo->thread, NULL, routine, root) != 0)
-				return (free_root_and_return_null(root));
-			choice = 0;
-		}
-		else
-		{
-			if (pthread_create(&philo->thread, NULL, routine2, root) != 0)
-				return (free_root_and_return_null(root));
-			choice = 1;
-		}
+		if (pthread_create(&philo->thread, NULL, routine, root) != 0)
+			return (free_root_and_return_null(root));
+		// if (choice)
+		// {
+		// 	if (pthread_create(&philo->thread, NULL, routine, root) != 0)
+		// 		return (free_root_and_return_null(root));
+		// 	choice = 0;
+		// }
+		// else
+		// {
+		// 	if (pthread_create(&philo->thread, NULL, routine2, root) != 0)
+		// 		return (free_root_and_return_null(root));
+		// 	choice = 1;
+		// }
 		philo = philo->next;
 	}
 	philo = tmp;
