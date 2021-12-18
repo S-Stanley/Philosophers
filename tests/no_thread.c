@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 20:29:50 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/16 23:01:52 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/18 14:43:38 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 #define EATING		0
 #define SLEEPING	1
 #define THINKING	2
+#define TRUE		1
+#define TIME_TO_DIE	7000
 
 pthread_mutex_t	g_mutex;
 
@@ -27,8 +29,10 @@ void	action(int action, unsigned int id)
 {
 	if (action == EATING)
 	{
+		pthread_mutex_lock(&g_mutex);
 		printf("philo %d is eating\n", id);
 		usleep(ONE_MINI_SECOND * 2);
+		pthread_mutex_unlock(&g_mutex);
 	}
 	else if (action == SLEEPING)
 	{
@@ -43,16 +47,13 @@ void	action(int action, unsigned int id)
 
 void	*routine(void *arg)
 {
-	unsigned int	iter;
 	unsigned int	*thread_nb;
 	struct timeval	time;
 	long int		total;
 	long int		tmp;
 
-	pthread_mutex_lock(&g_mutex);
-	iter = 0;
 	thread_nb = (unsigned int *)arg;
-	while (iter < 4)
+	while (TRUE)
 	{
 		total = 0;
 		gettimeofday(&time, NULL);
@@ -63,11 +64,14 @@ void	*routine(void *arg)
 		action(THINKING, *thread_nb);
 		gettimeofday(&time, NULL);
 		total = total + time.tv_usec;
-		printf("** Philo %d took %lu %lu (minisecond) to made iteration %d**\n",
-			*thread_nb, (total % tmp) / ONE_MINI_SECOND, (total % tmp), iter);
-		iter++;
+		printf("** Philo %d took %lu %lu (minisecond) from %u**\n",
+			*thread_nb, (total % tmp) / ONE_MINI_SECOND, (total % tmp), TIME_TO_DIE);
+		if ((total % tmp) > TIME_TO_DIE)
+		{
+			printf("Philo %d just died\n", *thread_nb);
+			return (arg);
+		}
 	}
-	pthread_mutex_unlock(&g_mutex);
 	return (arg);
 }
 
