@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 19:09:48 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/19 18:10:12 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/19 18:29:13 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,6 @@ char	*setup_philo_routine(pthread_mutex_t *g_mutex, t_philo *philo, t_dishes *fo
 		root = create_new_root(philo, g_mutex, fork, arg);
 		root->philo = tmp;
 		root->stop = stop;
-		printf("setup -----> %p\n", root->stop);
 		if (!root)
 			return (NULL);
 		if (pthread_create(&philo->thread, NULL, routine, root) != 0)
