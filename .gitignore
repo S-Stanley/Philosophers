@@ -1,4 +1,4 @@
 a.out
 *.o
-philo
+philo/philo
 .vscode/
