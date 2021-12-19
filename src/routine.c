@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:57:04 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/19 17:40:48 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/19 18:10:55 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,8 +130,12 @@ BOOLEAN	check_philo_alive(struct timeval time, struct timeval tmp, t_root root)
 	if (iter_time > root.arg.t_die)
 	{
 		printf("%ld %d died\n", get_timestamp(tmp), root.id);
+		root.stop[0] = 1;
 		return (FALSE);
 	}
+	printf("			%d %d %p\n", root.id, root.stop[0], root.stop);
+	if (root.stop[0])
+		return (FALSE);
 	return (TRUE);
 }
 

@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 19:09:48 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/13 01:40:09 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/19 18:10:12 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,34 +92,36 @@ t_root	*create_new_root(t_philo *philo, pthread_mutex_t *mutex, t_dishes *fork, 
 	return (root);
 }
 
+int	*get_stop_value(void)
+{
+	int	*stop;
+
+	stop = malloc(sizeof(int));
+	stop[0] = 0;
+	return (stop);
+}
+
 char	*setup_philo_routine(pthread_mutex_t *g_mutex, t_philo *philo, t_dishes *fork, t_arg arg)
 {
 	t_root			*root;
 	t_philo			*tmp;
 	int				choice;
+	int				*stop;
 
 	root = NULL;
 	tmp = philo;
 	choice = 1;
+	stop = get_stop_value();
 	while (philo)
 	{
 		root = create_new_root(philo, g_mutex, fork, arg);
+		root->philo = tmp;
+		root->stop = stop;
+		printf("setup -----> %p\n", root->stop);
 		if (!root)
 			return (NULL);
 		if (pthread_create(&philo->thread, NULL, routine, root) != 0)
 			return (free_root_and_return_null(root));
-		// if (choice)
-		// {
-		// 	if (pthread_create(&philo->thread, NULL, routine, root) != 0)
-		// 		return (free_root_and_return_null(root));
-		// 	choice = 0;
-		// }
-		// else
-		// {
-		// 	if (pthread_create(&philo->thread, NULL, routine2, root) != 0)
-		// 		return (free_root_and_return_null(root));
-		// 	choice = 1;
-		// }
 		philo = philo->next;
 	}
 	philo = tmp;
