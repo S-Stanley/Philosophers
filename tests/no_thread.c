@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 20:29:50 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/19 15:10:34 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/19 15:16:14 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <stdlib.h>
 
 #define ONE_SECOND	1000000
 #define ONE_MINI_SECOND 1000
@@ -61,6 +62,25 @@ void	what_to_do(int thread_nb)
 	}
 }
 
+long int	setup_total(void)
+{
+	long int		total;
+	struct timeval	time;
+
+	total = 0;
+	total = 0;
+	gettimeofday(&time, NULL);
+	total = total + time.tv_usec;
+	return (total);
+}
+
+void	*philo_died(void *arg, int thread_nb)
+{
+	printf("Philo %d just died\n", thread_nb);
+	exit(0);
+	return (arg);
+}
+
 void	*routine(void *arg)
 {
 	unsigned int	*thread_nb;
@@ -71,20 +91,14 @@ void	*routine(void *arg)
 	thread_nb = (unsigned int *)arg;
 	while (TRUE)
 	{
-		total = 0;
-		gettimeofday(&time, NULL);
-		total = total + time.tv_usec;
+		total = setup_total();
 		tmp = total;
 		what_to_do(*thread_nb);
 		gettimeofday(&time, NULL);
 		total = total + time.tv_usec;
-		printf("** Philo %d took %lu %lu (minisecond) from %u**\n",
-			*thread_nb, (total % tmp) / ONE_MINI_SECOND, (total % tmp), TIME_TO_DIE);
+		printf("** Philo %d took %lu %lu (minisecond) from %u**\n", *thread_nb, (total % tmp) / ONE_MINI_SECOND, (total % tmp), TIME_TO_DIE);
 		if ((total % tmp) > TIME_TO_DIE)
-		{
-			printf("Philo %d just died\n", *thread_nb);
-			return (arg);
-		}
+			return (philo_died(arg, *thread_nb));
 	}
 	return (arg);
 }
