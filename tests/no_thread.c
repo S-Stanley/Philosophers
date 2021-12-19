@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 20:29:50 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/19 15:59:49 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/19 16:01:59 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #define EATING			0
 #define SLEEPING		1
 #define THINKING		2
-#define TIME_TO_DIE		401
+#define TIME_TO_DIE		410
 #define TIME_TO_EAT		200
 #define TIME_TO_SLEEP	200
 
