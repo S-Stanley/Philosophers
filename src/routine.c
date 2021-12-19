@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:57:04 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/19 17:28:26 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/19 17:40:48 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,23 @@ t_couvert	get_philo_fork(unsigned int id, t_dishes *fork)
 	return (to_return);
 }
 
-void	action(int action, t_root root)
+long int	get_timestamp(struct timeval tmp)
+{
+	struct timeval	now;
+	long int		max_value_usec;
+	long int		iter_time;
+
+	max_value_usec = 999999;
+	gettimeofday(&now, NULL);
+	if (now.tv_sec == tmp.tv_sec)
+		iter_time = now.tv_usec - tmp.tv_usec;
+	else
+		iter_time = now.tv_usec + (max_value_usec - tmp.tv_usec);
+	iter_time = iter_time / ONE_MINI_SECOND;
+	return (iter_time);
+}
+
+void	action(int action, t_root root, struct timeval tmp)
 {
 	t_couvert		couvert;
 
@@ -59,35 +75,36 @@ void	action(int action, t_root root)
 	{
 		pthread_mutex_lock(&couvert.left->fork);
 		pthread_mutex_lock(&couvert.right->fork);
-		printf("philo %d is eating\n", root.id);
+		printf("%ld %d has taken a fork\n", get_timestamp(tmp), root.id);
+		printf("%ld %d is eating\n", get_timestamp(tmp), root.id);
 		usleep(root.arg.t_eat * ONE_MINI_SECOND);
 	}
 	else if (action == SLEEPING)
 	{
-		printf("philo %d is sleeping\n", root.id);
+		printf("%ld %d is sleeping\n", get_timestamp(tmp), root.id);
 		pthread_mutex_unlock(&couvert.left->fork);
 		pthread_mutex_unlock(&couvert.right->fork);
 		usleep(root.arg.t_sleep * ONE_MINI_SECOND);
 	}
 	else
 	{
-		printf("philo %d is thinking\n", root.id);
+		printf("%ld %d is thinking\n", get_timestamp(tmp), root.id);
 	}
 }
 
-void	what_to_do(int thread_nb, t_root root)
+void	what_to_do(int thread_nb, t_root root, struct timeval tmp)
 {
 	if ((thread_nb % 2) == 0)
 	{
-		action(EATING, root);
-		action(SLEEPING, root);
-		action(THINKING, root);
+		action(EATING, root, tmp);
+		action(SLEEPING, root, tmp);
+		action(THINKING, root, tmp);
 	}
 	else
 	{
-		action(SLEEPING, root);
-		action(THINKING, root);
-		action(EATING, root);
+		action(SLEEPING, root, tmp);
+		action(THINKING, root, tmp);
+		action(EATING, root, tmp);
 	}
 }
 
@@ -112,7 +129,7 @@ BOOLEAN	check_philo_alive(struct timeval time, struct timeval tmp, t_root root)
 	iter_time = iter_time / ONE_MINI_SECOND;
 	if (iter_time > root.arg.t_die)
 	{
-		printf("Philo %d just died\n", root.id);
+		printf("%ld %d died\n", get_timestamp(tmp), root.id);
 		return (FALSE);
 	}
 	return (TRUE);
@@ -129,7 +146,7 @@ void	*routine(void *arg)
 	{
 		time = get_timeval();
 		tmp = time;
-		what_to_do(root->id, *root);
+		what_to_do(root->id, *root, tmp);
 		gettimeofday(&time, NULL);
 		time = get_timeval();
 		if (!check_philo_alive(time, tmp, *root))
