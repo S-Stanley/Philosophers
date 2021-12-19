@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:57:04 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/19 18:28:42 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/19 18:49:51 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ BOOLEAN	action(int action, t_root root, struct timeval tmp)
 	{
 		pthread_mutex_lock(&couvert.left->fork);
 		pthread_mutex_lock(&couvert.right->fork);
+		printf("%ld %d has taken a fork\n", get_timestamp(tmp), root.id);
 		printf("%ld %d has taken a fork\n", get_timestamp(tmp), root.id);
 		printf("%ld %d is eating\n", get_timestamp(tmp), root.id);
 		usleep(root.arg.t_eat * ONE_MINI_SECOND);
