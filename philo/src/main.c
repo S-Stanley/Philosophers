@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 17:55:36 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/12 12:30:30 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/19 18:58:35 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ int	main(int argc, char **argv)
 
 	if (argc != 4 && argc != 5)
 		print_and_exit("Wrong number or arguments\n");
+	if (check_error_arg(argv))
+		return (0);
 	arg = setup_arg(argc, argv);
 	philo = setup_philo(arg);
 	fork = init_mutex(arg.nbr_philo);

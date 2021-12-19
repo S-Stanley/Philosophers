@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:29:35 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/19 18:06:59 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/19 19:01:38 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,26 @@
 # include <sys/time.h>
 # include <string.h>
 
+# define ONE_MINI_SECOND	1000
+# define EATING				0
+# define SLEEPING			1
+# define THINKING			2
+
+# define FALSE				0
+# define TRUE				1
+# define BOOLEAN			unsigned int
+
+
 typedef struct s_dishes {
 	pthread_mutex_t	fork;
 	void			*next;
 	unsigned int	id;
 }	t_dishes;
+
+typedef struct s_couvert {
+	t_dishes	*left;
+	t_dishes	*right;
+}	t_couvert;
 
 typedef struct s_philo {
 	unsigned int	id;
@@ -62,5 +77,6 @@ t_philo			*setup_philo(t_arg arg);
 char			*free_root_and_return_null(t_root *root);
 void			*free_root_and_return(t_root *root);
 void			*routine2(void *arg);
+BOOLEAN			check_error_arg(char **argv);
 
 #endif

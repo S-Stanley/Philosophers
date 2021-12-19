@@ -6,25 +6,12 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:57:04 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/19 18:49:51 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/19 19:01:28 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-typedef struct s_couvert {
-	t_dishes	*left;
-	t_dishes	*right;
-}	t_couvert;
-
-#define ONE_MINI_SECOND	1000
-#define EATING			0
-#define SLEEPING		1
-#define THINKING		2
-
-#define FALSE			0
-#define TRUE			1
-#define BOOLEAN			unsigned int
 
 t_couvert	get_philo_fork(unsigned int id, t_dishes *fork)
 {
