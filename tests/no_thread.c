@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 20:29:50 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/18 14:43:38 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/19 15:10:34 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #define SLEEPING	1
 #define THINKING	2
 #define TRUE		1
-#define TIME_TO_DIE	7000
+#define TIME_TO_DIE	5000
 
 pthread_mutex_t	g_mutex;
 
@@ -45,6 +45,22 @@ void	action(int action, unsigned int id)
 	}
 }
 
+void	what_to_do(int thread_nb)
+{
+	if ((thread_nb % 2) == 0)
+	{
+		action(EATING, thread_nb);
+		action(SLEEPING, thread_nb);
+		action(THINKING, thread_nb);
+	}
+	else
+	{
+		action(SLEEPING, thread_nb);
+		action(THINKING, thread_nb);
+		action(EATING, thread_nb);
+	}
+}
+
 void	*routine(void *arg)
 {
 	unsigned int	*thread_nb;
@@ -59,9 +75,7 @@ void	*routine(void *arg)
 		gettimeofday(&time, NULL);
 		total = total + time.tv_usec;
 		tmp = total;
-		action(EATING, *thread_nb);
-		action(SLEEPING, *thread_nb);
-		action(THINKING, *thread_nb);
+		what_to_do(*thread_nb);
 		gettimeofday(&time, NULL);
 		total = total + time.tv_usec;
 		printf("** Philo %d took %lu %lu (minisecond) from %u**\n",
