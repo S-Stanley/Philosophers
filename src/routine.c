@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:57:04 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/19 17:11:19 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/19 17:28:26 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,20 +17,14 @@ typedef struct s_couvert {
 	t_dishes	*right;
 }	t_couvert;
 
-#define ONE_SECOND		1000000
 #define ONE_MINI_SECOND	1000
 #define EATING			0
 #define SLEEPING		1
 #define THINKING		2
-#define TIME_TO_DIE		410
-#define TIME_TO_EAT		200
-#define TIME_TO_SLEEP	200
 
 #define FALSE			0
 #define TRUE			1
 #define BOOLEAN			unsigned int
-
-pthread_mutex_t	g_mutex;
 
 t_couvert	get_philo_fork(unsigned int id, t_dishes *fork)
 {
@@ -67,12 +61,12 @@ void	action(int action, t_root root)
 		pthread_mutex_lock(&couvert.right->fork);
 		printf("philo %d is eating\n", root.id);
 		usleep(root.arg.t_eat * ONE_MINI_SECOND);
-		pthread_mutex_unlock(&couvert.left->fork);
-		pthread_mutex_unlock(&couvert.right->fork);
 	}
 	else if (action == SLEEPING)
 	{
 		printf("philo %d is sleeping\n", root.id);
+		pthread_mutex_unlock(&couvert.left->fork);
+		pthread_mutex_unlock(&couvert.right->fork);
 		usleep(root.arg.t_sleep * ONE_MINI_SECOND);
 	}
 	else
@@ -116,8 +110,6 @@ BOOLEAN	check_philo_alive(struct timeval time, struct timeval tmp, t_root root)
 	else
 		iter_time = time.tv_usec + (max_value_usec - tmp.tv_usec);
 	iter_time = iter_time / ONE_MINI_SECOND;
-	printf("*Philo %d took %ld usec out of %d\n",
-		root.id, iter_time, root.arg.t_die);
 	if (iter_time > root.arg.t_die)
 	{
 		printf("Philo %d just died\n", root.id);
