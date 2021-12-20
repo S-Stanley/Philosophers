@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 17:55:36 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/19 18:58:35 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/20 01:23:10 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,17 @@ void	destroy_mutex(t_dishes *fork)
 	}
 }
 
+int	one_philo(void)
+{
+	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	printf("%d 1 as taking a fork\n", time.tv_usec);
+	gettimeofday(&time, NULL);
+	printf("%d 1 die\n", time.tv_usec);
+	return (0);
+}
+
 int	main(int argc, char **argv)
 {
 	pthread_mutex_t	g_mutex;
@@ -71,11 +82,11 @@ int	main(int argc, char **argv)
 	t_philo			*philo;
 	t_dishes		*fork;
 
-	if (argc != 4 && argc != 5)
-		print_and_exit("Wrong number or arguments\n");
-	if (check_error_arg(argv))
+	if (check_error_arg(argc, argv))
 		return (0);
 	arg = setup_arg(argc, argv);
+	if (arg.nbr_philo == 1)
+		return (one_philo());
 	philo = setup_philo(arg);
 	fork = init_mutex(arg.nbr_philo);
 	if (!philo)

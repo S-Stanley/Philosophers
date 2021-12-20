@@ -6,12 +6,11 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:57:04 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/19 19:01:28 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/19 23:22:10 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
-
 
 t_couvert	get_philo_fork(unsigned int id, t_dishes *fork)
 {
@@ -65,7 +64,10 @@ BOOLEAN	check_philo_alive(struct timeval tmp, t_root root)
 		return (FALSE);
 	}
 	if (root.stop[0])
+	{
+		printf("closing thread %d %d\n", root.id, root.stop[0]);
 		return (FALSE);
+	}
 	return (TRUE);
 }
 
@@ -80,8 +82,26 @@ BOOLEAN	action(int action, t_root root, struct timeval tmp)
 	{
 		pthread_mutex_lock(&couvert.left->fork);
 		pthread_mutex_lock(&couvert.right->fork);
+		if (!check_philo_alive(tmp, root))
+		{
+			pthread_mutex_unlock(&couvert.left->fork);
+			pthread_mutex_unlock(&couvert.right->fork);
+			return (FALSE);
+		}		
 		printf("%ld %d has taken a fork\n", get_timestamp(tmp), root.id);
+		if (!check_philo_alive(tmp, root))
+		{
+			pthread_mutex_unlock(&couvert.left->fork);
+			pthread_mutex_unlock(&couvert.right->fork);
+			return (FALSE);
+		}		
 		printf("%ld %d has taken a fork\n", get_timestamp(tmp), root.id);
+		if (!check_philo_alive(tmp, root))
+		{
+			pthread_mutex_unlock(&couvert.left->fork);
+			pthread_mutex_unlock(&couvert.right->fork);
+			return (FALSE);
+		}		
 		printf("%ld %d is eating\n", get_timestamp(tmp), root.id);
 		usleep(root.arg.t_eat * ONE_MINI_SECOND);
 		pthread_mutex_unlock(&couvert.left->fork);
@@ -90,8 +110,6 @@ BOOLEAN	action(int action, t_root root, struct timeval tmp)
 	else if (action == SLEEPING)
 	{
 		printf("%ld %d is sleeping\n", get_timestamp(tmp), root.id);
-		// pthread_mutex_unlock(&couvert.left->fork);
-		// pthread_mutex_unlock(&couvert.right->fork);
 		usleep(root.arg.t_sleep * ONE_MINI_SECOND);
 	}
 	else

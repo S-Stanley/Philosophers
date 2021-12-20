@@ -6,19 +6,27 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/06 20:06:07 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/19 19:07:24 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/20 00:56:36 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-BOOLEAN	check_error_arg(char **argv)
+BOOLEAN	print_and_return(void)
+{
+	printf("Wrong number or arguments\n");
+	return (TRUE);
+}
+
+BOOLEAN	check_error_arg(int argc, char **argv)
 {
 	unsigned int	i;
 	unsigned int	x;
 
-	i = 1;
-	while (argv[i])
+	if (argc != 5 && argc != 6)
+		return (print_and_return());
+	i = 0;
+	while (argv[++i])
 	{
 		x = 0;
 		while (argv[i][x])
@@ -30,7 +38,6 @@ BOOLEAN	check_error_arg(char **argv)
 			}
 			x++;
 		}
-		i++;
 	}
 	if (ft_atoi(argv[1]) == 0)
 	{

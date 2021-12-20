@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:29:35 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/19 19:01:38 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/20 00:52:29 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@
 # define FALSE				0
 # define TRUE				1
 # define BOOLEAN			unsigned int
-
 
 typedef struct s_dishes {
 	pthread_mutex_t	fork;
@@ -77,6 +76,5 @@ t_philo			*setup_philo(t_arg arg);
 char			*free_root_and_return_null(t_root *root);
 void			*free_root_and_return(t_root *root);
 void			*routine2(void *arg);
-BOOLEAN			check_error_arg(char **argv);
-
+BOOLEAN			check_error_arg(int argc, char **argv);
 #endif
