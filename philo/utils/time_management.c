@@ -1,31 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
+/*   time_management.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/12/06 19:49:35 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/26 17:26:20 by sserbin          ###   ########.fr       */
+/*   Created: 2021/12/26 16:39:27 by sserbin           #+#    #+#             */
+/*   Updated: 2021/12/26 16:39:38 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../main.h"
 
-int	print_and_exit(char *message)
+long int	get_timestamp(struct timeval tmp)
 {
-	write(1, "Error\n", ft_strlen("Error\n"));
-	write(1, message, ft_strlen(message));
-	return (1);
-}
+	struct timeval	now;
+	long int		max_value_usec;
+	long int		iter_time;
 
-int	*get_stop_value(void)
-{
-	int	*stop;
-
-	stop = malloc(sizeof(int));
-	if (!stop)
-		return (NULL);
-	stop[0] = 0;
-	return (stop);
+	max_value_usec = 999999;
+	gettimeofday(&now, NULL);
+	if (now.tv_sec == tmp.tv_sec)
+		iter_time = now.tv_usec - tmp.tv_usec;
+	else
+		iter_time = now.tv_usec + (max_value_usec - tmp.tv_usec);
+	iter_time = iter_time / ONE_MINI_SECOND;
+	return (iter_time);
 }

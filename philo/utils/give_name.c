@@ -1,31 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
+/*   give_name.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/12/06 19:49:35 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/26 17:26:20 by sserbin          ###   ########.fr       */
+/*   Created: 2021/12/26 17:27:07 by sserbin           #+#    #+#             */
+/*   Updated: 2021/12/26 17:28:23 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../main.h"
 
-int	print_and_exit(char *message)
+char	*give_name(const unsigned int id)
 {
-	write(1, "Error\n", ft_strlen("Error\n"));
-	write(1, message, ft_strlen(message));
-	return (1);
-}
-
-int	*get_stop_value(void)
-{
-	int	*stop;
-
-	stop = malloc(sizeof(int));
-	if (!stop)
-		return (NULL);
-	stop[0] = 0;
-	return (stop);
+	if (id == 0)
+		return ("Aristote");
+	if (id == 1)
+		return ("Kant");
+	if (id == 2)
+		return ("Platon");
+	if (id == 3)
+		return ("Socrate");
+	if (id == 4)
+		return ("Nietzsche");
+	if (id == 5)
+		return ("Descartes");
+	if (id == 6)
+		return ("Confucius");
+	if (id == 7)
+		return ("Marx");
+	if (id == 8)
+		return ("Sarte");
+	if (id == 9)
+		return ("Epicure");
+	return ("Aristote");
 }

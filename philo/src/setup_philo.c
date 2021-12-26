@@ -6,36 +6,11 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 19:09:48 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/26 16:37:38 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/26 17:26:55 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../main.h"
-
-char	*give_name(const unsigned int id)
-{
-	if (id == 0)
-		return ("Aristote");
-	if (id == 1)
-		return ("Kant");
-	if (id == 2)
-		return ("Platon");
-	if (id == 3)
-		return ("Socrate");
-	if (id == 4)
-		return ("Nietzsche");
-	if (id == 5)
-		return ("Descartes");
-	if (id == 6)
-		return ("Confucius");
-	if (id == 7)
-		return ("Marx");
-	if (id == 8)
-		return ("Sarte");
-	if (id == 9)
-		return ("Epicure");
-	return ("Aristote");
-}
 
 t_philo	*add_philo(int id, char *name, t_philo *philo)
 {
@@ -77,7 +52,7 @@ t_philo	*setup_philo(t_arg arg)
 	return (philo);
 }
 
-t_root	*create_new_root(t_philo *philo, pthread_mutex_t *mutex, t_dishes *fork, t_arg arg)
+t_root	*create_new_root(	t_philo *philo, t_arg arg, t_create_root pts)
 {
 	t_root	*root;
 
@@ -86,49 +61,50 @@ t_root	*create_new_root(t_philo *philo, pthread_mutex_t *mutex, t_dishes *fork, 
 		return (NULL);
 	root->name = philo->name;
 	root->id = philo->id;
-	root->g_mutex = mutex;
-	root->fork = fork;
+	root->g_mutex = pts.g_mutex;
+	root->fork = pts.fork;
 	root->arg = arg;
+	root->philo = pts.start;
+	root->stop = pts.stop;
 	return (root);
 }
 
-int	*get_stop_value(void)
+t_create_root	setup_pts(	int *stop, pthread_mutex_t *g_mutex,
+							t_philo *start, t_dishes *fork)
 {
-	int	*stop;
+	t_create_root	to_return;
 
-	stop = malloc(sizeof(int));
-	stop[0] = 0;
-	return (stop);
+	to_return.fork = fork;
+	to_return.g_mutex = g_mutex;
+	to_return.start = start;
+	to_return.stop = stop;
+	return (to_return);
 }
 
-char	*setup_philo_routine(pthread_mutex_t *g_mutex, t_philo *philo, t_dishes *fork, t_arg arg)
+char	*setup_philo_routine(	pthread_mutex_t *g_mutex, t_philo *philo,
+								t_dishes *fork, t_arg arg)
 {
 	t_root			*root;
 	t_philo			*tmp;
-	int				choice;
-	int				*stop;
+	t_create_root	pts;
 
 	root = NULL;
+	pts = setup_pts(get_stop_value(), g_mutex, philo, fork);
 	tmp = philo;
-	choice = 1;
-	stop = get_stop_value();
 	while (philo)
 	{
-		root = create_new_root(philo, g_mutex, fork, arg);
-		root->philo = tmp;
-		root->stop = stop;
+		root = create_new_root(philo, arg, pts);
 		if (!root)
 			return (NULL);
 		if (pthread_create(&philo->thread, NULL, routine, root) != 0)
 			return (free_root_and_return_null(root));
 		philo = philo->next;
 	}
-	philo = tmp;
-	while (philo)
+	while (tmp)
 	{
-		if (pthread_join(philo->thread, NULL) != 0)
+		if (pthread_join(tmp->thread, NULL) != 0)
 			return (free_root_and_return_null(root));
-		philo = philo->next;
+		tmp = tmp->next;
 	}
 	return ("good");
 }
