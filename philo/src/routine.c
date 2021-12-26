@@ -6,11 +6,11 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:57:04 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/26 16:28:13 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/26 16:37:31 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "main.h"
+#include "../main.h"
 
 t_couvert	get_philo_fork(unsigned int id, t_dishes *fork)
 {

@@ -6,11 +6,11 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/26 16:17:30 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/26 16:29:31 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/26 16:37:54 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "main.h"
+#include "../main.h"
 
 void	print_str(int type, struct timeval tmp, t_root root)
 {

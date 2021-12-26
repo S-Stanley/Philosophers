@@ -6,11 +6,11 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/06 20:06:07 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/20 00:56:36 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/26 16:37:28 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "main.h"
+#include "../main.h"
 
 BOOLEAN	print_and_return(void)
 {

@@ -6,12 +6,13 @@
 #    By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/12/05 23:16:06 by sserbin           #+#    #+#              #
-#    Updated: 2021/12/26 16:28:46 by sserbin          ###   ########.fr        #
+#    Updated: 2021/12/26 16:37:16 by sserbin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS= 	src/main.c src/parsing.c src/ft_atoi.c src/exit.c src/string.c \
-		src/routine.c src/clean.c src/setup_philo.c src/print_str.c
+SRCS= 	main.c \
+		src/routine.c src/parsing.c src/setup_philo.c \
+		utils/clean.c utils/exit.c utils/ft_atoi.c utils/ft_strlen.c utils/print_str.c
 OBJS=$(SRCS:.c=.o)
 NAME = philo
 CC = clang
