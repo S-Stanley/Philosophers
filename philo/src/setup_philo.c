@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 19:09:48 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/26 17:26:55 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/26 17:49:06 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,18 +66,20 @@ t_root	*create_new_root(	t_philo *philo, t_arg arg, t_create_root pts)
 	root->arg = arg;
 	root->philo = pts.start;
 	root->stop = pts.stop;
+	root->total_time = pts.total_time;
 	return (root);
 }
 
-t_create_root	setup_pts(	int *stop, pthread_mutex_t *g_mutex,
-							t_philo *start, t_dishes *fork)
+t_create_root	setup_pts(	pthread_mutex_t *g_mutex, t_philo *start,
+							t_dishes *fork)
 {
 	t_create_root	to_return;
 
 	to_return.fork = fork;
 	to_return.g_mutex = g_mutex;
 	to_return.start = start;
-	to_return.stop = stop;
+	to_return.stop = get_stop_value();
+	to_return.total_time = get_total_time();
 	return (to_return);
 }
 
@@ -89,7 +91,7 @@ char	*setup_philo_routine(	pthread_mutex_t *g_mutex, t_philo *philo,
 	t_create_root	pts;
 
 	root = NULL;
-	pts = setup_pts(get_stop_value(), g_mutex, philo, fork);
+	pts = setup_pts(g_mutex, philo, fork);
 	tmp = philo;
 	while (philo)
 	{

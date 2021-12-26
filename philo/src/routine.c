@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:57:04 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/26 17:08:02 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/26 17:49:16 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ BOOLEAN	check_philo_alive(struct timeval tmp, t_root root)
 	return (TRUE);
 }
 
-BOOLEAN	action(int action, t_root root, struct timeval tmp)
+BOOLEAN	action(	int action, t_root root, struct timeval tmp,
+				long long int *total_time)
 {
 	t_couvert		couvert;
 
@@ -43,9 +44,9 @@ BOOLEAN	action(int action, t_root root, struct timeval tmp)
 	if (action == EATING)
 	{
 		lock_fork(root);
-		if (!print_str(PHILO_TAKE_FORK, tmp, root)
-			|| !print_str(PHILO_TAKE_FORK, tmp, root)
-			|| !print_str(PHILO_EAT, tmp, root)
+		if (!print_str(PHILO_TAKE_FORK, tmp, root, total_time)
+			|| !print_str(PHILO_TAKE_FORK, tmp, root, total_time)
+			|| !print_str(PHILO_EAT, tmp, root, total_time)
 		)
 			return (FALSE);
 		usleep(root.arg.t_eat * ONE_MINI_SECOND);
@@ -53,33 +54,34 @@ BOOLEAN	action(int action, t_root root, struct timeval tmp)
 	}
 	else if (action == SLEEPING)
 	{
-		if (!print_str(PHILO_SLEEP, tmp, root))
+		if (!print_str(PHILO_SLEEP, tmp, root, total_time))
 			return (FALSE);
 		usleep(root.arg.t_sleep * ONE_MINI_SECOND);
 	}
 	else
-		print_str(PHILO_THINK, tmp, root);
+		print_str(PHILO_THINK, tmp, root, total_time);
 	return (TRUE);
 }
 
-BOOLEAN	what_to_do(int thread_nb, t_root root, struct timeval tmp)
+BOOLEAN	what_to_do(	int thread_nb, t_root root, struct timeval tmp,
+					long long int *total_time)
 {
 	if ((thread_nb % 2) == 0)
 	{
-		if (!action(EATING, root, tmp))
+		if (!action(EATING, root, tmp, total_time))
 			return (FALSE);
-		if (!action(SLEEPING, root, tmp))
+		if (!action(SLEEPING, root, tmp, total_time))
 			return (FALSE);
-		if (!action(THINKING, root, tmp))
+		if (!action(THINKING, root, tmp, total_time))
 			return (FALSE);
 	}
 	else
 	{
-		if (!action(SLEEPING, root, tmp))
+		if (!action(SLEEPING, root, tmp, total_time))
 			return (FALSE);
-		if (!action(THINKING, root, tmp))
+		if (!action(THINKING, root, tmp, total_time))
 			return (FALSE);
-		if (!action(EATING, root, tmp))
+		if (!action(EATING, root, tmp, total_time))
 			return (FALSE);
 	}
 	return (TRUE);
@@ -96,7 +98,7 @@ void	*routine(void *arg)
 	{
 		gettimeofday(&time, NULL);
 		tmp = time;
-		if (!what_to_do(root->id, *root, tmp))
+		if (!what_to_do(root->id, *root, tmp, root->total_time))
 			return (arg);
 		if (!check_philo_alive(tmp, *root))
 			return (arg);

@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/06 19:49:35 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/26 17:26:20 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/26 17:49:56 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,4 +28,15 @@ int	*get_stop_value(void)
 		return (NULL);
 	stop[0] = 0;
 	return (stop);
+}
+
+long long int	*get_total_time(void)
+{
+	long long int	*total_time;
+
+	total_time = malloc(sizeof(long long int));
+	if (!total_time)
+		return (NULL);
+	total_time[0] = 0;
+	return (total_time);
 }
