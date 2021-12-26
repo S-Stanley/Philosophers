@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:29:35 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/20 00:52:29 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/26 16:29:49 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,11 @@
 # define FALSE				0
 # define TRUE				1
 # define BOOLEAN			unsigned int
+
+# define PHILO_TAKE_FORK 	0
+# define PHILO_EAT			1
+# define PHILO_SLEEP		2
+# define PHILO_THINK		3
 
 typedef struct s_dishes {
 	pthread_mutex_t	fork;
@@ -77,4 +82,7 @@ char			*free_root_and_return_null(t_root *root);
 void			*free_root_and_return(t_root *root);
 void			*routine2(void *arg);
 BOOLEAN			check_error_arg(int argc, char **argv);
+void			print_str(int type, struct timeval tmp, t_root root);
+long int		get_timestamp(struct timeval tmp);
+
 #endif

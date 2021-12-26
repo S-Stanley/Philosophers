@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 17:55:36 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/20 01:23:10 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/26 16:15:41 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,9 @@ int	one_philo(void)
 	struct timeval	time;
 
 	gettimeofday(&time, NULL);
-	printf("%d 1 as taking a fork\n", time.tv_usec);
+	printf("%ld 1 as taking a fork\n", time.tv_usec);
 	gettimeofday(&time, NULL);
-	printf("%d 1 die\n", time.tv_usec);
+	printf("%ld 1 die\n", time.tv_usec);
 	return (0);
 }
 

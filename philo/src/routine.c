@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/10 18:57:04 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/19 23:22:10 by sserbin          ###   ########.fr       */
+/*   Updated: 2021/12/26 16:28:13 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,33 +88,33 @@ BOOLEAN	action(int action, t_root root, struct timeval tmp)
 			pthread_mutex_unlock(&couvert.right->fork);
 			return (FALSE);
 		}		
-		printf("%ld %d has taken a fork\n", get_timestamp(tmp), root.id);
+		print_str(PHILO_TAKE_FORK, tmp, root);
 		if (!check_philo_alive(tmp, root))
 		{
 			pthread_mutex_unlock(&couvert.left->fork);
 			pthread_mutex_unlock(&couvert.right->fork);
 			return (FALSE);
-		}		
-		printf("%ld %d has taken a fork\n", get_timestamp(tmp), root.id);
+		}
+		print_str(PHILO_TAKE_FORK, tmp, root);
 		if (!check_philo_alive(tmp, root))
 		{
 			pthread_mutex_unlock(&couvert.left->fork);
 			pthread_mutex_unlock(&couvert.right->fork);
 			return (FALSE);
-		}		
-		printf("%ld %d is eating\n", get_timestamp(tmp), root.id);
+		}
+		print_str(PHILO_EAT, tmp, root);
 		usleep(root.arg.t_eat * ONE_MINI_SECOND);
 		pthread_mutex_unlock(&couvert.left->fork);
 		pthread_mutex_unlock(&couvert.right->fork);
 	}
 	else if (action == SLEEPING)
 	{
-		printf("%ld %d is sleeping\n", get_timestamp(tmp), root.id);
+		print_str(PHILO_SLEEP, tmp, root);
 		usleep(root.arg.t_sleep * ONE_MINI_SECOND);
 	}
 	else
 	{
-		printf("%ld %d is thinking\n", get_timestamp(tmp), root.id);
+		print_str(PHILO_THINK, tmp, root);
 	}
 	return (TRUE);
 }
@@ -160,107 +160,3 @@ void	*routine(void *arg)
 	}
 	return (arg);
 }
-
-// void	*ex_routine(void *arg)
-// {
-// 	t_root			*root;
-// 	struct timeval	time;
-// 	t_couvert		couvert;
-// 	long long int	timestamp_now;
-// 	long long int	timestamp_max;
-
-// 	root = (t_root *)arg;
-// 	couvert = get_philo_fork(root->id, root->fork);
-// 	gettimeofday(&time, NULL);
-// 	timestamp_now = 0;
-// 	timestamp_now = timestamp_now + (long long int)time.tv_usec;
-// 	timestamp_max = timestamp_now + (long long int)root->arg.t_die;
-// 	while (1)
-// 	{
-// 		if (pthread_mutex_lock(&couvert.right->fork) != 0)
-// 			printf("ERROR MUTEX LOCK 0\n");
-// 		if (pthread_mutex_lock(&couvert.left->fork) != 0)
-// 			printf("ERROR MUTEX LOCK 1\n");
-// 		gettimeofday(&time, NULL);
-// 		printf("%lld %s has taken a fork\n",
-// 			timestamp_max - timestamp_now, root->name);
-// 		gettimeofday(&time, NULL);
-// 		timestamp_now = timestamp_now + (long long int)time.tv_usec;
-// 		timestamp_max = timestamp_now + (long long int)root->arg.t_die;
-// 		philo_is_eating(root->arg.t_eat, root, timestamp_now, timestamp_max);
-// 		printf("%lld %s is going to dropm fork\n",
-// 			timestamp_max - timestamp_now, root->name);
-// 		if (pthread_mutex_unlock(&couvert.right->fork) != 0)
-// 			printf("ERROR MUTEX UNLOCK 0\n");
-// 		if (pthread_mutex_unlock(&couvert.left->fork) != 0)
-// 			printf("ERROR MUTEX UNLOCK 1\n");
-// 		printf("%lld %s just dropped fork\n",
-// 			timestamp_max - timestamp_now, root->name);
-// 		gettimeofday(&time, NULL);
-// 		timestamp_now = timestamp_now + (long long int)time.tv_usec;
-// 		philo_is_sleeping(root->arg.t_sleep, root->name,
-// 			timestamp_now, timestamp_max);
-// 		gettimeofday(&time, NULL);
-// 		timestamp_now = timestamp_now + (long long int)time.tv_usec;
-// 		philo_is_thinking(1, root->name, timestamp_now, timestamp_max);
-// 		gettimeofday(&time, NULL);
-// 		timestamp_now = timestamp_now + (long long int)time.tv_usec;
-// 		usleep(200000);
-// 	}
-// 	printf("%lld %s just died\n", timestamp_max - timestamp_now, root->name);
-// 	return (free_root_and_return(root));
-// }
-
-/*
-void	*routine(void *arg)
-{
-	t_root			*root;
-	struct timeval	time;
-	long int		time_to_die;
-	t_couvert		couvert;
-	int				time_start;
-	long long int	total;
-
-	root = (t_root *)arg;
-	couvert = get_philo_fork(root->id, root->fork);
-	total = 0;
-	gettimeofday(&time, NULL);
-	total = total + time.tv_usec;
-	time_to_die = time.tv_usec + root->arg.t_die;
-	while (1)
-	{
-		gettimeofday(&time, NULL);
-		total = total + (long long int)time.tv_usec;
-		time_start = total;
-		// if (time.tv_usec > time_to_die)
-		// 	break ;
-		gettimeofday(&time, NULL);
-		if (pthread_mutex_lock(&couvert.right->fork) != 0)
-			printf("ERROR MUTEX LOCK 0\n");
-		if (pthread_mutex_lock(&couvert.left->fork) != 0)
-			printf("ERROR MUTEX LOCK 1\n");
-		gettimeofday(&time, NULL);
-		printf("%lld %s has taken a fork\n", time_to_die - total, root->name);
-		philo_is_eating(time, root->arg.t_eat, root, time_to_die);
-		printf("%s is going to dropm fork\n", root->name);
-		if (pthread_mutex_unlock(&couvert.right->fork) != 0)
-			printf("ERROR MUTEX UNLOCK 0\n");
-		if (pthread_mutex_unlock(&couvert.left->fork) != 0)
-			printf("ERROR MUTEX UNLOCK 1\n");
-		printf("%lld %s just dropped fork\n",  time_to_die - total, root->name);
-		time_to_die = total + root->arg.t_die;
-		// if (time.tv_usec > time_to_die)
-			// break ;
-		// gettimeofday(&time, NULL);
-		philo_is_sleeping(time, root->arg.t_sleep, root->name, time_to_die);
-		// gettimeofday(&time, NULL);
-		// if (time.tv_usec > time_to_die)
-		// 	break ;
-		// gettimeofday(&time, NULL);
-		philo_is_thinking(time, 1, root->name, time_to_die);
-		// usleep(10);
-	}
-	printf("%ld %s just died\n", time_to_die - time.tv_usec, root->name);
-	return (free_root_and_return(root));
-}
-*/
