@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/02 17:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/02 19:19:28 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/02 23:08:18 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #define TIME_TO_EAT		200
 #define TIME_TO_DIE		411
 #define NB_PHILO		2
+#define BOOL			int
 
 typedef struct s_data {
 	int				id;
@@ -41,15 +42,25 @@ void	*routine(void *arg)
 {
 	t_data			*data;
 	struct timeval	time;
+	struct timeval	start_time;
 
 	data = (t_data *)arg;
 	while (TRUE)
 	{
+		gettimeofday(&start_time, NULL);
 		pthread_mutex_lock(data->mutex);
 		eating(data);
 		pthread_mutex_unlock(data->mutex);
 		sleeping(data);
 		thinking(data);
+		pthread_mutex_lock(data->mutex);
+		if (get_time(start_time) > TIME_TO_DIE)
+		{
+			printf("%ld philo %d died\n", get_time(start_time), data->id);
+			pthread_mutex_unlock(data->mutex);
+			exit(0);
+		}
+		pthread_mutex_unlock(data->mutex);
 	}
 	free(arg);
 }
@@ -66,6 +77,11 @@ long int	get_time(struct timeval time)
 	else
 		return ((((max - time.tv_usec) + now.tv_usec) + ((now.tv_sec - time.tv_sec -1)*max)) / 1000);
 }
+
+// BOOL	is_alive(t_data *data)
+// {
+// 	if ()
+// }
 
 void	eating(t_data *data)
 {
