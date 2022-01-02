@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/02 17:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/02 19:15:23 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/02 19:19:28 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #define TRUE 1
 #define TIME_TO_SLEEP	200
 #define TIME_TO_EAT		200
-#define TIME_TO_DIE		450
+#define TIME_TO_DIE		411
 #define NB_PHILO		2
 
 typedef struct s_data {
@@ -61,7 +61,6 @@ long int	get_time(struct timeval time)
 
 	max = 999999;
 	gettimeofday(&now, NULL);
-	// printf("%ld %ld %ld %ld %d\n", now.tv_sec, now.tv_usec, time.tv_sec, time.tv_usec, now.tv_sec == time.tv_sec);
 	if (now.tv_sec == time.tv_sec)
 		return ((now.tv_usec - time.tv_usec) / 1000);
 	else
