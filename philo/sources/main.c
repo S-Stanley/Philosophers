@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/02 17:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/03 23:44:44 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 00:06:59 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,14 +77,15 @@ void	ft_sleep(long int sleepingtime, t_data *data, struct timeval start_time)
 
 void	eating(t_data *data, struct timeval start_time)
 {
+	printf("%ld philo %d has taken a fork\n", get_time(data->time), data->id);
+	printf("%ld philo %d has taken a fork\n", get_time(data->time), data->id);
 	printf("%ld philo %d is eating\n", get_time(data->time), data->id);
 	ft_sleep(data->t_eat, data, start_time);
-	printf("%ld philo %d dropped fork\n", get_time(data->time), data->id);
 }
 
 void	sleeping(t_data *data, struct timeval start_time)
 {
-	printf("%ld philo %d is slepping\n", get_time(data->time), data->id);
+	printf("%ld philo %d is sleeping\n", get_time(data->time), data->id);
 	ft_sleep(data->t_sleep, data, start_time);
 }
 
