@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/02 17:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 00:06:59 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 00:28:51 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,11 @@ void	*routine(void *arg)
 	while (TRUE)
 	{
 		gettimeofday(&start_time, NULL);
-		pthread_mutex_lock(data->mutex);
+		lock_fork(data);
+		// pthread_mutex_lock(data->mutex);
 		eating(data, start_time);
-		pthread_mutex_unlock(data->mutex);
+		// pthread_mutex_unlock(data->mutex);
+		unlock_fork(data);
 		sleeping(data, start_time);
 		thinking(data);
 		pthread_mutex_lock(data->mutex);
@@ -94,7 +96,7 @@ void	thinking(t_data *data)
 	printf("%ld philo %d is thinking\n", get_time(data->time), data->id);
 }
 
-t_data	*create_data(int id, struct timeval time, pthread_mutex_t *mutex, t_arg arg)
+t_data	*create_data(int id, struct timeval time, pthread_mutex_t *mutex, t_arg arg, t_dishes *fork)
 {
 	t_data	*data;
 
@@ -106,6 +108,7 @@ t_data	*create_data(int id, struct timeval time, pthread_mutex_t *mutex, t_arg a
 	data->t_eat = arg.t_eat;
 	data->t_die = arg.t_die;
 	data->max_t_eat = arg.max_t_eat;
+	data->fork = fork;
 	return (data);
 }
 
@@ -118,6 +121,58 @@ long int	*create_timestamp(void)
 	return (time);
 }
 
+t_dishes	*add_fork(t_dishes *fork, unsigned int i)
+{
+	t_dishes	*new;
+	t_dishes	*tmp;
+
+	new = malloc(sizeof(t_dishes));
+	new->id = i;
+	new ->next = NULL;
+	if (!fork)
+		return (new);
+	tmp = fork;
+	while (fork->next)
+		fork = fork->next;
+	fork->next = new;
+	return (tmp);
+}
+
+t_dishes	*init_mutex(int nb)
+{
+	int			i;
+	t_dishes	*fork;
+	t_dishes	*tmp;
+
+	fork = NULL;
+	i = 0;
+	while (i < nb)
+	{
+		fork = add_fork(fork, i);
+		i++;
+	}
+	tmp = fork;
+	while (fork)
+	{
+		pthread_mutex_init(&fork->fork, NULL);
+		fork = fork->next;
+	}
+	return (tmp);
+}
+
+void	destroy_mutex(t_dishes *fork)
+{
+	t_dishes	*tmp;
+
+	while (fork)
+	{
+		tmp = fork->next;
+		pthread_mutex_destroy(&fork->fork);
+		free(fork);
+		fork = tmp;
+	}
+}
+
 int	main(int argc, char **argv)
 {
 	struct timeval	time;
@@ -125,17 +180,18 @@ int	main(int argc, char **argv)
 	t_arg			arg;
 	t_philo			*philo;
 	t_philo			*tmp;
+	t_dishes		*fork;
 
 	if (check_error_arg(argc, argv))
 		return (0);
 	arg = setup_arg(argc, argv);
 	philo = setup_philo(arg);
+	fork = init_mutex(arg.nbr_philo);
 	gettimeofday(&time, NULL);
-	pthread_mutex_init(&mutex, NULL);
 	tmp = philo;
 	while (philo)
 	{
-		pthread_create(&philo->thread, NULL, routine, create_data(philo->id, time, &mutex, arg));
+		pthread_create(&philo->thread, NULL, routine, create_data(philo->id, time, &mutex, arg, fork));
 		philo = philo->next;
 	}
 	philo = tmp;
@@ -144,6 +200,6 @@ int	main(int argc, char **argv)
 		pthread_join(philo->thread, NULL);
 		philo = philo->next;
 	}
-	pthread_mutex_destroy(&mutex);
+	destroy_mutex(fork);
 	return (0);
 }
