@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 23:01:02 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/03 23:13:59 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/03 23:19:42 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,6 @@
 # define TRUE 	1
 # define FALSE	0
 # define BOOL	int
-# define TIME_TO_SLEEP	200
-# define TIME_TO_EAT		200
-# define TIME_TO_DIE		1000
-# define NB_PHILO		2
-# define MAX_TIME_TO_EAT	2
 
 typedef struct s_data {
 	int				id;

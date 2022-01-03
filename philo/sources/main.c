@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/02 17:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/03 23:18:02 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/03 23:20:26 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ long int	*create_timestamp(void)
 int	main(int argc, char **argv)
 {
 	int				i;
-	pthread_t		threads[NB_PHILO];
+	pthread_t		threads[ft_atoi(argv[1])];
 	struct timeval	time;
 	pthread_mutex_t	mutex;
 	t_arg			arg;
