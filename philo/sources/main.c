@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/02 17:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 00:28:51 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 00:56:14 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,7 @@ void	*routine(void *arg)
 	{
 		gettimeofday(&start_time, NULL);
 		lock_fork(data);
-		// pthread_mutex_lock(data->mutex);
 		eating(data, start_time);
-		// pthread_mutex_unlock(data->mutex);
 		unlock_fork(data);
 		sleeping(data, start_time);
 		thinking(data);
@@ -69,11 +67,19 @@ long int	get_time(struct timeval time)
 
 void	ft_sleep(long int sleepingtime, t_data *data, struct timeval start_time)
 {
-	while (sleepingtime > 0)
+	int		timeleft;
+
+	timeleft = data->t_die - get_time(start_time);
+	if (timeleft > sleepingtime)
+		usleep(sleepingtime * 1000);
+	else
 	{
-		check_philo_life(start_time, data);
-		usleep(10 * 1000);
-		sleepingtime = sleepingtime - 10;
+		while (sleepingtime > 0)
+		{
+			check_philo_life(start_time, data);
+			usleep(10 * 1000);
+			sleepingtime = sleepingtime - 10;
+		}
 	}
 }
 
