@@ -6,44 +6,15 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/02 17:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/03 21:51:15 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/03 23:18:02 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <string.h>
-#include <sys/time.h>
-
-#define TRUE 1
-#define TIME_TO_SLEEP	200
-#define TIME_TO_EAT		200
-#define TIME_TO_DIE		1000
-#define NB_PHILO		2
-#define BOOL			int
-#define MAX_TIME_TO_EAT	2
-
-typedef struct s_data {
-	int				id;
-	pthread_mutex_t	*mutex;
-	struct timeval	time;
-}	t_data;
-
-long int	*create_timestamp(void);
-t_data		*create_data(int id, struct timeval time, pthread_mutex_t *mutex);
-void		*routine(void *arg);
-void		eating(t_data *data, struct timeval start_time);
-void		sleeping(t_data *data, struct timeval start_time);
-void		thinking(t_data *data);
-long int	get_time(struct timeval time);
-void		check_philo_life(struct timeval start_time, t_data *data);
-void		ft_sleep(long int sleepingtime, t_data *data, struct timeval start_time);
+#include "main.h"
 
 void	check_philo_life(struct timeval start_time, t_data *data)
 {
-	if (get_time(start_time) > TIME_TO_DIE)
+	if (get_time(start_time) > data->t_die)
 	{
 		printf("%ld philo %d died\n", get_time(start_time), data->id);
 		pthread_mutex_unlock(data->mutex);
@@ -72,7 +43,7 @@ void	*routine(void *arg)
 		check_philo_life(start_time, data);
 		pthread_mutex_unlock(data->mutex);
 		ate++;
-		if (ate == MAX_TIME_TO_EAT)
+		if (ate == data->max_t_eat)
 			break ;
 	}
 	free(arg);
@@ -89,7 +60,9 @@ long int	get_time(struct timeval time)
 	if (now.tv_sec == time.tv_sec)
 		return ((now.tv_usec - time.tv_usec) / 1000);
 	else
-		return ((((max - time.tv_usec) + now.tv_usec) + ((now.tv_sec - time.tv_sec -1)*max)) / 1000);
+		return ((
+				((max - time.tv_usec) + now.tv_usec)
+				+ ((now.tv_sec - time.tv_sec -1) * max)) / 1000);
 }
 
 void	ft_sleep(long int sleepingtime, t_data *data, struct timeval start_time)
@@ -105,14 +78,14 @@ void	ft_sleep(long int sleepingtime, t_data *data, struct timeval start_time)
 void	eating(t_data *data, struct timeval start_time)
 {
 	printf("%ld philo %d is eating\n", get_time(data->time), data->id);
-	ft_sleep(TIME_TO_EAT, data, start_time);
+	ft_sleep(data->t_eat, data, start_time);
 	printf("%ld philo %d dropped fork\n", get_time(data->time), data->id);
 }
 
 void	sleeping(t_data *data, struct timeval start_time)
 {
 	printf("%ld philo %d is slepping\n", get_time(data->time), data->id);
-	ft_sleep(TIME_TO_SLEEP, data, start_time);
+	ft_sleep(data->t_sleep, data, start_time);
 }
 
 void	thinking(t_data *data)
@@ -120,7 +93,7 @@ void	thinking(t_data *data)
 	printf("%ld philo %d is thinking\n", get_time(data->time), data->id);
 }
 
-t_data	*create_data(int id, struct timeval time, pthread_mutex_t *mutex)
+t_data	*create_data(int id, struct timeval time, pthread_mutex_t *mutex, t_arg arg)
 {
 	t_data	*data;
 
@@ -128,6 +101,10 @@ t_data	*create_data(int id, struct timeval time, pthread_mutex_t *mutex)
 	data->id = id;
 	data->time = time;
 	data->mutex = mutex;
+	data->t_sleep = arg.t_sleep;
+	data->t_eat = arg.t_eat;
+	data->t_die = arg.t_die;
+	data->max_t_eat = arg.max_t_eat;
 	return (data);
 }
 
@@ -140,20 +117,25 @@ long int	*create_timestamp(void)
 	return (time);
 }
 
-int	main(void)
+int	main(int argc, char **argv)
 {
 	int				i;
 	pthread_t		threads[NB_PHILO];
 	struct timeval	time;
 	pthread_mutex_t	mutex;
+	t_arg			arg;
 
+	if (check_error_arg(argc, argv))
+		return (0);
+	arg = setup_arg(argc, argv);
 	gettimeofday(&time, NULL);
 	pthread_mutex_init(&mutex, NULL);
 	i = -1;
-	while (++i < NB_PHILO)
-		pthread_create(&threads[i], NULL, routine, create_data(i, time, &mutex));
+	while (++i < arg.nbr_philo)
+		pthread_create(
+			&threads[i], NULL, routine, create_data(i, time, &mutex, arg));
 	i = -1;
-	while (++i < NB_PHILO)
+	while (++i < arg.nbr_philo)
 		pthread_join(threads[i], NULL);
 	pthread_mutex_destroy(&mutex);
 	return (0);
