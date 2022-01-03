@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/02 17:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/03 23:20:26 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/03 23:44:44 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,24 +119,30 @@ long int	*create_timestamp(void)
 
 int	main(int argc, char **argv)
 {
-	int				i;
-	pthread_t		threads[ft_atoi(argv[1])];
 	struct timeval	time;
 	pthread_mutex_t	mutex;
 	t_arg			arg;
+	t_philo			*philo;
+	t_philo			*tmp;
 
 	if (check_error_arg(argc, argv))
 		return (0);
 	arg = setup_arg(argc, argv);
+	philo = setup_philo(arg);
 	gettimeofday(&time, NULL);
 	pthread_mutex_init(&mutex, NULL);
-	i = -1;
-	while (++i < arg.nbr_philo)
-		pthread_create(
-			&threads[i], NULL, routine, create_data(i, time, &mutex, arg));
-	i = -1;
-	while (++i < arg.nbr_philo)
-		pthread_join(threads[i], NULL);
+	tmp = philo;
+	while (philo)
+	{
+		pthread_create(&philo->thread, NULL, routine, create_data(philo->id, time, &mutex, arg));
+		philo = philo->next;
+	}
+	philo = tmp;
+	while (philo)
+	{
+		pthread_join(philo->thread, NULL);
+		philo = philo->next;
+	}
 	pthread_mutex_destroy(&mutex);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 23:01:02 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/03 23:19:42 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 00:05:14 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ typedef struct s_data {
 
 typedef struct s_philo {
 	unsigned int	id;
-	char			*name;
 	pthread_t		thread;
 	void			*next;
 }	t_philo;
@@ -63,5 +62,6 @@ void		ft_sleep(long int sleepingtime, t_data *data,
 int			ft_atoi(char *str);
 t_arg		setup_arg(int argc, char **argv);
 BOOL		check_error_arg(int argc, char **argv);
+t_philo		*setup_philo(t_arg arg);
 
 #endif
