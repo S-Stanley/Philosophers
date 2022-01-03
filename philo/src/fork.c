@@ -5,12 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/12/26 17:07:37 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/26 17:08:08 by sserbin          ###   ########.fr       */
+/*   Created: 2022/01/04 00:08:18 by sserbin           #+#    #+#             */
+/*   Updated: 2022/01/04 00:29:20 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../main.h"
+#include "main.h"
 
 t_couvert	get_philo_fork(unsigned int id, t_dishes *fork)
 {
@@ -36,20 +36,20 @@ t_couvert	get_philo_fork(unsigned int id, t_dishes *fork)
 	return (to_return);
 }
 
-void	lock_fork(t_root root)
+void	lock_fork(t_data *data)
 {
 	t_couvert		couvert;
 
-	couvert = get_philo_fork(root.id, root.fork);
+	couvert = get_philo_fork(data->id, data->fork);
 	pthread_mutex_lock(&couvert.left->fork);
 	pthread_mutex_lock(&couvert.right->fork);
 }
 
-void	unlock_fork(t_root root)
+void	unlock_fork(t_data *data)
 {
 	t_couvert		couvert;
 
-	couvert = get_philo_fork(root.id, root.fork);
+	couvert = get_philo_fork(data->id, data->fork);
 	pthread_mutex_unlock(&couvert.left->fork);
 	pthread_mutex_unlock(&couvert.right->fork);
 }

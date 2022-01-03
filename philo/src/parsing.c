@@ -5,20 +5,20 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/12/06 20:06:07 by sserbin           #+#    #+#             */
-/*   Updated: 2021/12/26 16:37:28 by sserbin          ###   ########.fr       */
+/*   Created: 2022/01/03 23:03:52 by sserbin           #+#    #+#             */
+/*   Updated: 2022/01/03 23:13:27 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../main.h"
+#include "main.h"
 
-BOOLEAN	print_and_return(void)
+BOOL	print_and_return(void)
 {
 	printf("Wrong number or arguments\n");
 	return (TRUE);
 }
 
-BOOLEAN	check_error_arg(int argc, char **argv)
+BOOL	check_error_arg(int argc, char **argv)
 {
 	unsigned int	i;
 	unsigned int	x;
@@ -56,6 +56,6 @@ t_arg	setup_arg(int argc, char **argv)
 	arg.t_eat = ft_atoi(argv[3]);
 	arg.t_sleep = ft_atoi(argv[4]);
 	if (argc == 6)
-		arg.nbr_philo = ft_atoi(argv[5]);
+		arg.max_t_eat = ft_atoi(argv[5]);
 	return (arg);
 }
