@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/02 17:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/03 00:34:14 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/03 21:51:15 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,9 @@ void	*routine(void *arg)
 	t_data			*data;
 	struct timeval	time;
 	struct timeval	start_time;
+	int				ate;
 
+	ate = 0;
 	data = (t_data *)arg;
 	while (TRUE)
 	{
@@ -69,8 +71,12 @@ void	*routine(void *arg)
 		pthread_mutex_lock(data->mutex);
 		check_philo_life(start_time, data);
 		pthread_mutex_unlock(data->mutex);
+		ate++;
+		if (ate == MAX_TIME_TO_EAT)
+			break ;
 	}
 	free(arg);
+	return (arg);
 }
 
 long int	get_time(struct timeval time)
