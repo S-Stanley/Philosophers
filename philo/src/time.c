@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:59:27 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 01:52:23 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 02:04:03 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ long int	*create_timestamp(void)
 	long int	*time;
 
 	time = malloc(sizeof(long int));
+	if (!time)
+		return (-1);
 	time[0] = 0;
 	return (time);
 }
