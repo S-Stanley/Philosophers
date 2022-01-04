@@ -16,7 +16,7 @@ SRCS= 	src/main.c src/fork.c src/ft_atoi.c src/mutex.c src/parsing.c \
 OBJS=$(SRCS:.c=.o)
 NAME = philo
 CC = clang
-FLAGS = -Wall -Wextra -Werror -pthread  -g -fsanitize=address
+FLAGS = -Wall -Wextra -Werror -pthread  -g # -fsanitize=address
 RM = rm -rf
 
 all: $(NAME)

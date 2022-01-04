@@ -49,6 +49,7 @@ void	start_program(t_arg arg, t_philo *philo, t_dishes *fork)
 
 	gettimeofday(&time, NULL);
 	tmp = philo;
+	pthread_mutex_init(&mutex, NULL);
 	while (philo)
 	{
 		data = create_data(philo->id, &mutex, arg, fork);
@@ -66,6 +67,7 @@ void	start_program(t_arg arg, t_philo *philo, t_dishes *fork)
 			return ;
 		philo = philo->next;
 	}
+	pthread_mutex_destroy(&mutex);
 }
 
 int	main(int argc, char **argv)
