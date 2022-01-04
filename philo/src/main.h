@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 23:01:02 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 01:52:41 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 02:01:38 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,5 +79,7 @@ t_dishes	*add_fork(t_dishes *fork, unsigned int i);
 void		free_dishes(t_dishes *fork);
 void		free_for_exit(t_dishes *fork, t_philo *philo);
 void		free_philo(t_philo *philo);
+BOOL		ft_loop2(t_data *data);
+BOOL		ft_loop1(t_data *data);
 
 #endif
