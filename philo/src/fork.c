@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:08:18 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 00:29:20 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 01:00:07 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,21 @@ void	unlock_fork(t_data *data)
 	couvert = get_philo_fork(data->id, data->fork);
 	pthread_mutex_unlock(&couvert.left->fork);
 	pthread_mutex_unlock(&couvert.right->fork);
+}
+
+t_dishes	*add_fork(t_dishes *fork, unsigned int i)
+{
+	t_dishes	*new;
+	t_dishes	*tmp;
+
+	new = malloc(sizeof(t_dishes));
+	new->id = i;
+	new ->next = NULL;
+	if (!fork)
+		return (new);
+	tmp = fork;
+	while (fork->next)
+		fork = fork->next;
+	fork->next = new;
+	return (tmp);
 }

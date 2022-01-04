@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 23:01:02 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 00:30:31 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 01:06:32 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,5 +77,9 @@ BOOL		check_error_arg(int argc, char **argv);
 t_philo		*setup_philo(t_arg arg);
 void		lock_fork(t_data *data);
 void		unlock_fork(t_data *data);
+t_dishes	*init_mutex(int nb);
+void		destroy_mutex(t_dishes *fork);
+void		*routine(void *arg);
+t_dishes	*add_fork(t_dishes *fork, unsigned int i);
 
 #endif
