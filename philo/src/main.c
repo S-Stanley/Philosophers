@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/02 17:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 01:04:13 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 01:18:14 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,12 @@ void	check_philo_life(struct timeval start_time, t_data *data)
 	}
 }
 
-t_data	*create_data(int id, struct timeval time, pthread_mutex_t *mutex, t_arg arg, t_dishes *fork)
+t_data	*create_data(int id, pthread_mutex_t *mutex, t_arg arg, t_dishes *fork)
 {
 	t_data	*data;
 
 	data = malloc(sizeof(t_data));
 	data->id = id;
-	data->time = time;
 	data->mutex = mutex;
 	data->t_sleep = arg.t_sleep;
 	data->t_eat = arg.t_eat;
@@ -49,7 +48,8 @@ void	start_program(t_arg arg, t_philo *philo, t_dishes *fork)
 	tmp = philo;
 	while (philo)
 	{
-		data = create_data(philo->id, time, &mutex, arg, fork);
+		data = create_data(philo->id, &mutex, arg, fork);
+		data->time = time;
 		pthread_create(&philo->thread, NULL, routine, data);
 		philo = philo->next;
 	}

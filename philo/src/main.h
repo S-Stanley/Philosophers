@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 23:01:02 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 01:06:32 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 01:18:36 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,7 @@ typedef struct s_arg {
 }	t_arg;
 
 long int	*create_timestamp(void);
-t_data		*create_data(int id, struct timeval time,
-				pthread_mutex_t *mutex, t_arg arg, t_dishes *fork);
 void		*routine(void *arg);
-void		eating(t_data *data, struct timeval start_time);
-void		sleeping(t_data *data, struct timeval start_time);
-void		thinking(t_data *data);
 long int	get_time(struct timeval time);
 void		check_philo_life(struct timeval start_time, t_data *data);
 void		ft_sleep(long int sleepingtime, t_data *data,
