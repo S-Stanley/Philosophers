@@ -6,20 +6,21 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/02 17:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 01:40:01 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 01:45:27 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-void	check_philo_life(struct timeval start_time, t_data *data)
+BOOL	check_philo_life(struct timeval start_time, t_data *data)
 {
 	if (get_time(start_time) > data->t_die)
 	{
 		printf("%ld philo %d died\n", get_time(start_time), data->id);
 		pthread_mutex_unlock(data->mutex);
-		exit(0);
+		return (FALSE);
 	}
+	return (TRUE);
 }
 
 t_data	*create_data(int id, pthread_mutex_t *mutex, t_arg arg, t_dishes *fork)

@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 01:40:59 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 01:47:11 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	thinking(t_data *data)
 	printf("%ld philo %d is thinking\n", get_time(data->time), data->id);
 }
 
-void	ft_loop(t_data *data)
+BOOL	ft_loop(t_data *data)
 {
 	struct timeval	start_time;
 
@@ -43,9 +43,6 @@ void	ft_loop(t_data *data)
 		unlock_fork(data);
 		sleeping(data, start_time);
 		thinking(data);
-		pthread_mutex_lock(data->mutex);
-		check_philo_life(start_time, data);
-		pthread_mutex_unlock(data->mutex);
 	}
 	else
 	{
@@ -54,10 +51,12 @@ void	ft_loop(t_data *data)
 		lock_fork(data);
 		eating(data, start_time);
 		unlock_fork(data);
-		pthread_mutex_lock(data->mutex);
-		check_philo_life(start_time, data);
-		pthread_mutex_unlock(data->mutex);
 	}
+	pthread_mutex_lock(data->mutex);
+	if (!check_philo_life(start_time, data))
+		return (FALSE);
+	pthread_mutex_unlock(data->mutex);
+	return (TRUE);
 }
 
 void	*routine(void *arg)
@@ -69,7 +68,8 @@ void	*routine(void *arg)
 	data = (t_data *)arg;
 	while (TRUE)
 	{
-		ft_loop(data);
+		if (!ft_loop(data))
+			break ;
 		ate++;
 		if (ate == data->max_t_eat)
 			break ;
