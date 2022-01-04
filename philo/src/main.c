@@ -14,10 +14,16 @@
 
 BOOL	check_philo_life(struct timeval start_time, t_data *data)
 {
+	if (data->stop[0])
+	{
+		pthread_mutex_unlock(data->mutex);
+		return (FALSE);
+	}
 	if (get_time(start_time) > data->t_die)
 	{
 		printf("%ld philo %d died\n", get_time(start_time), data->id);
 		pthread_mutex_unlock(data->mutex);
+		data->stop[0] = 1;
 		return (FALSE);
 	}
 	return (TRUE);
@@ -26,10 +32,15 @@ BOOL	check_philo_life(struct timeval start_time, t_data *data)
 t_data	*create_data(int id, pthread_mutex_t *mutex, t_arg arg, t_dishes *fork)
 {
 	t_data	*data;
+	int		*stop;
 
 	data = malloc(sizeof(t_data));
 	if (!data)
 		return (NULL);
+	stop = malloc(sizeof(int));
+	if (!stop)
+		return (NULL);
+	stop[0] = 0;
 	data->id = id;
 	data->mutex = mutex;
 	data->t_sleep = arg.t_sleep;
@@ -37,6 +48,7 @@ t_data	*create_data(int id, pthread_mutex_t *mutex, t_arg arg, t_dishes *fork)
 	data->t_die = arg.t_die;
 	data->max_t_eat = arg.max_t_eat;
 	data->fork = fork;
+	data->stop = stop;
 	return (data);
 }
 

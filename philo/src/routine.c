@@ -35,6 +35,7 @@ void	*routine(void *arg)
 		if(ate == data->max_t_eat)
 			break ;
 	}
-	free(arg);
+	free(data->stop);
+	free(data);
 	return (NULL);
 }

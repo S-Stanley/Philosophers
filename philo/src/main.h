@@ -50,6 +50,7 @@ typedef struct s_data {
 	int				t_die;
 	int				max_t_eat;
 	t_dishes		*fork;
+	int				*stop;
 }	t_data;
 
 typedef struct s_arg {
