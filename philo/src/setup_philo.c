@@ -6,23 +6,11 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 23:40:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 00:05:40 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 01:39:17 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
-
-void	free_philo(t_philo *philo)
-{
-	t_philo	*tmp;
-
-	while (philo)
-	{
-		tmp = philo->next;
-		free(philo);
-		philo = tmp;
-	}
-}
 
 t_philo	*add_philo(int id, t_philo *philo)
 {

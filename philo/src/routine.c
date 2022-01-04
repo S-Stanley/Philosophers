@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 01:13:36 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 01:40:59 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,5 +75,5 @@ void	*routine(void *arg)
 			break ;
 	}
 	free(arg);
-	return (arg);
+	return (NULL);
 }

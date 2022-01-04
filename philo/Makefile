@@ -6,16 +6,16 @@
 #    By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/12/05 23:16:06 by sserbin           #+#    #+#              #
-#    Updated: 2022/01/04 01:05:21 by sserbin          ###   ########.fr        #
+#    Updated: 2022/01/04 01:39:07 by sserbin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRCS= 	src/main.c src/fork.c src/ft_atoi.c src/mutex.c src/parsing.c \
-		src/routine.c src/setup_philo.c src/time.c
+		src/routine.c src/setup_philo.c src/time.c src/clean.c
 OBJS=$(SRCS:.c=.o)
 NAME = philo
 CC = clang
-FLAGS = -Wall -Wextra -Werror -pthread # -g -fsanitize=address
+FLAGS = -Wall -Wextra -Werror -pthread  -g -fsanitize=address
 RM = rm -rf
 
 all: $(NAME)

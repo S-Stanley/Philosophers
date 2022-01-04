@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/02 17:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 01:18:14 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 01:40:01 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ t_data	*create_data(int id, pthread_mutex_t *mutex, t_arg arg, t_dishes *fork)
 	t_data	*data;
 
 	data = malloc(sizeof(t_data));
+	if (!data)
+		return (NULL);
 	data->id = id;
 	data->mutex = mutex;
 	data->t_sleep = arg.t_sleep;
@@ -49,17 +51,20 @@ void	start_program(t_arg arg, t_philo *philo, t_dishes *fork)
 	while (philo)
 	{
 		data = create_data(philo->id, &mutex, arg, fork);
+		if (!data)
+			return ;
 		data->time = time;
-		pthread_create(&philo->thread, NULL, routine, data);
+		if (pthread_create(&philo->thread, NULL, routine, data) != 0)
+			return ;
 		philo = philo->next;
 	}
 	philo = tmp;
 	while (philo)
 	{
-		pthread_join(philo->thread, NULL);
+		if (pthread_join(philo->thread, NULL) != 0)
+			return ;
 		philo = philo->next;
 	}
-	destroy_mutex(fork);
 }
 
 int	main(int argc, char **argv)
@@ -72,7 +77,15 @@ int	main(int argc, char **argv)
 		return (0);
 	arg = setup_arg(argc, argv);
 	philo = setup_philo(arg);
+	if (!philo)
+		return (0);
 	fork = init_mutex(arg.nbr_philo);
+	if (!fork)
+	{
+		free_for_exit(fork, philo);
+		return (0);
+	}
 	start_program(arg, philo, fork);
+	free_for_exit(fork, philo);
 	return (0);
 }

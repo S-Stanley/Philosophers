@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 23:01:02 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 01:18:36 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 01:40:49 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,5 +76,8 @@ t_dishes	*init_mutex(int nb);
 void		destroy_mutex(t_dishes *fork);
 void		*routine(void *arg);
 t_dishes	*add_fork(t_dishes *fork, unsigned int i);
+void		free_dishes(t_dishes *fork);
+void		free_for_exit(t_dishes *fork, t_philo *philo);
+void		free_philo(t_philo *philo);
 
 #endif

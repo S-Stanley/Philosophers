@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:08:18 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 01:00:07 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 01:29:34 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ t_dishes	*add_fork(t_dishes *fork, unsigned int i)
 	t_dishes	*tmp;
 
 	new = malloc(sizeof(t_dishes));
+	if (!new)
+		return (fork);
 	new->id = i;
 	new ->next = NULL;
 	if (!fork)
