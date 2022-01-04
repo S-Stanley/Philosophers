@@ -21,18 +21,18 @@ void	*routine(void *arg)
 	data = (t_data *)arg;
 	while (TRUE)
 	{
-		// if (data->id % 2)
-		// {
+		if (data->id % 2)
+		{
 			if (!ft_loop1(data))
 				break ;
-		// }
-		// else
-		// {
-		// 	if (!ft_loop2(data))
-		// 		break ;
-		// }
+		}
+		else
+		{
+			if (!ft_loop2(data))
+				break ;
+		}
 		ate++;
-		if (ate == data->max_t_eat)
+		if(ate == data->max_t_eat)
 			break ;
 	}
 	free(arg);

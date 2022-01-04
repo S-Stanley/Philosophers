@@ -57,5 +57,7 @@ t_arg	setup_arg(int argc, char **argv)
 	arg.t_sleep = ft_atoi(argv[4]);
 	if (argc == 6)
 		arg.max_t_eat = ft_atoi(argv[5]);
+	else
+		arg.max_t_eat = -1;
 	return (arg);
 }
