@@ -6,24 +6,28 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 01:47:11 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 01:56:55 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-void	eating(t_data *data, struct timeval start_time)
+BOOL	eating(t_data *data, struct timeval start_time)
 {
 	printf("%ld philo %d has taken a fork\n", get_time(data->time), data->id);
 	printf("%ld philo %d has taken a fork\n", get_time(data->time), data->id);
 	printf("%ld philo %d is eating\n", get_time(data->time), data->id);
-	ft_sleep(data->t_eat, data, start_time);
+	if (!ft_sleep(data->t_eat, data, start_time))
+		return (FALSE);
+	return (TRUE);
 }
 
-void	sleeping(t_data *data, struct timeval start_time)
+BOOL	sleeping(t_data *data, struct timeval start_time)
 {
 	printf("%ld philo %d is sleeping\n", get_time(data->time), data->id);
-	ft_sleep(data->t_sleep, data, start_time);
+	if (!ft_sleep(data->t_sleep, data, start_time))
+		return (FALSE);
+	return (TRUE);
 }
 
 void	thinking(t_data *data)
@@ -31,27 +35,43 @@ void	thinking(t_data *data)
 	printf("%ld philo %d is thinking\n", get_time(data->time), data->id);
 }
 
-BOOL	ft_loop(t_data *data)
+BOOL	ft_loop1(t_data *data)
 {
 	struct timeval	start_time;
 
 	gettimeofday(&start_time, NULL);
-	if (data->id % 2)
+	lock_fork(data);
+	if (!eating(data, start_time))
 	{
-		lock_fork(data);
-		eating(data, start_time);
 		unlock_fork(data);
-		sleeping(data, start_time);
-		thinking(data);
+		return (FALSE);
 	}
-	else
+	unlock_fork(data);
+	if (!sleeping(data, start_time))
+		return (FALSE);
+	thinking(data);
+	pthread_mutex_lock(data->mutex);
+	if (!check_philo_life(start_time, data))
+		return (FALSE);
+	pthread_mutex_unlock(data->mutex);
+	return (TRUE);
+}
+
+BOOL	ft_loop2(t_data *data)
+{
+	struct timeval	start_time;
+
+	gettimeofday(&start_time, NULL);
+	thinking(data);
+	if (!sleeping(data, start_time))
+		return (FALSE);
+	lock_fork(data);
+	if (!eating(data, start_time))
 	{
-		thinking(data);
-		sleeping(data, start_time);
-		lock_fork(data);
-		eating(data, start_time);
 		unlock_fork(data);
+		return (FALSE);
 	}
+	unlock_fork(data);
 	pthread_mutex_lock(data->mutex);
 	if (!check_philo_life(start_time, data))
 		return (FALSE);
@@ -68,8 +88,16 @@ void	*routine(void *arg)
 	data = (t_data *)arg;
 	while (TRUE)
 	{
-		if (!ft_loop(data))
-			break ;
+		if (data->id % 2)
+		{
+			if (!ft_loop1(data))
+				break ;
+		}
+		else
+		{
+			if (!ft_loop2(data))
+				break ;
+		}
 		ate++;
 		if (ate == data->max_t_eat)
 			break ;

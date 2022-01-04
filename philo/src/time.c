@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:59:27 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 00:59:50 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 01:52:23 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ long int	get_time(struct timeval time)
 				+ ((now.tv_sec - time.tv_sec -1) * max)) / 1000);
 }
 
-void	ft_sleep(long int sleepingtime, t_data *data, struct timeval start_time)
+BOOL	ft_sleep(long int sleepingtime, t_data *data, struct timeval start_time)
 {
 	int		timeleft;
 
@@ -38,11 +38,13 @@ void	ft_sleep(long int sleepingtime, t_data *data, struct timeval start_time)
 	{
 		while (sleepingtime > 0)
 		{
-			check_philo_life(start_time, data);
+			if (!check_philo_life(start_time, data))
+				return (FALSE);
 			usleep(10 * 1000);
 			sleepingtime = sleepingtime - 10;
 		}
 	}
+	return (TRUE);
 }
 
 long int	*create_timestamp(void)

@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 23:01:02 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 01:45:39 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/04 01:52:41 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ long int	*create_timestamp(void);
 void		*routine(void *arg);
 long int	get_time(struct timeval time);
 BOOL		check_philo_life(struct timeval start_time, t_data *data);
-void		ft_sleep(long int sleepingtime, t_data *data,
+BOOL		ft_sleep(long int sleepingtime, t_data *data,
 				struct timeval start_time);
 int			ft_atoi(char *str);
 t_arg		setup_arg(int argc, char **argv);
