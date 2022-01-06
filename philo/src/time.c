@@ -6,11 +6,22 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:59:27 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/06 19:32:06 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/06 19:54:34 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
+
+int	*create_stop_var(void)
+{
+	int	*stop;
+
+	stop = malloc(sizeof(int));
+	if (!stop)
+		return (NULL);
+	stop[0] = 0;
+	return (stop);
+}
 
 long int	get_time(struct timeval time)
 {

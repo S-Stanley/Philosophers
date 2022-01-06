@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/02 17:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/06 19:47:21 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/06 19:56:22 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,15 +48,16 @@ t_data	*create_data(int id, pthread_mutex_t *mutex, t_arg arg, int *stop)
 	return (data);
 }
 
-int	*create_stop_var(void)
+void	join_philo(t_philo *philo, pthread_mutex_t mutex, int *stop)
 {
-	int	*stop;
-
-	stop = malloc(sizeof(int));
-	if (!stop)
-		return (NULL);
-	stop[0] = 0;
-	return (stop);
+	while (philo)
+	{
+		if (pthread_join(philo->thread, NULL) != 0)
+			return ;
+		philo = philo->next;
+	}
+	free(stop);
+	pthread_mutex_destroy(&mutex);
 }
 
 void	start_program(t_arg arg, t_philo *philo, t_dishes *fork)
@@ -82,15 +83,7 @@ void	start_program(t_arg arg, t_philo *philo, t_dishes *fork)
 			return ;
 		philo = philo->next;
 	}
-	philo = tmp;
-	while (philo)
-	{
-		if (pthread_join(philo->thread, NULL) != 0)
-			return ;
-		philo = philo->next;
-	}
-	free(stop);
-	pthread_mutex_destroy(&mutex);
+	join_philo(tmp, mutex, stop);
 }
 
 int	main(int argc, char **argv)

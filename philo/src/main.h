@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 23:01:02 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 02:01:38 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/06 19:54:45 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,5 +82,6 @@ void		free_for_exit(t_dishes *fork, t_philo *philo);
 void		free_philo(t_philo *philo);
 BOOL		ft_loop2(t_data *data);
 BOOL		ft_loop1(t_data *data);
+int			*create_stop_var(void);
 
 #endif
