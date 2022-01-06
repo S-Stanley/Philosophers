@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/02 17:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/06 19:33:22 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/06 19:47:21 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,35 +21,42 @@ BOOL	check_philo_life(struct timeval start_time, t_data *data)
 	}
 	if (get_time(start_time) > data->t_die)
 	{
+		if (data->stop[0])
+			return (FALSE);
 		printf("%ld philo %d died\n", get_time(data->time), data->id);
-		pthread_mutex_unlock(data->mutex);
 		data->stop[0] = 1;
+		pthread_mutex_unlock(data->mutex);
 		return (FALSE);
 	}
 	return (TRUE);
 }
 
-t_data	*create_data(int id, pthread_mutex_t *mutex, t_arg arg, t_dishes *fork)
+t_data	*create_data(int id, pthread_mutex_t *mutex, t_arg arg, int *stop)
 {
 	t_data	*data;
-	int		*stop;
 
 	data = malloc(sizeof(t_data));
 	if (!data)
 		return (NULL);
-	stop = malloc(sizeof(int));
-	if (!stop)
-		return (NULL);
-	stop[0] = 0;
 	data->id = id;
 	data->mutex = mutex;
 	data->t_sleep = arg.t_sleep;
 	data->t_eat = arg.t_eat;
 	data->t_die = arg.t_die;
 	data->max_t_eat = arg.max_t_eat;
-	data->fork = fork;
 	data->stop = stop;
 	return (data);
+}
+
+int	*create_stop_var(void)
+{
+	int	*stop;
+
+	stop = malloc(sizeof(int));
+	if (!stop)
+		return (NULL);
+	stop[0] = 0;
+	return (stop);
 }
 
 void	start_program(t_arg arg, t_philo *philo, t_dishes *fork)
@@ -58,16 +65,19 @@ void	start_program(t_arg arg, t_philo *philo, t_dishes *fork)
 	struct timeval	time;
 	pthread_mutex_t	mutex;
 	t_data			*data;
+	int				*stop;
 
 	gettimeofday(&time, NULL);
 	tmp = philo;
 	pthread_mutex_init(&mutex, NULL);
+	stop = create_stop_var();
 	while (philo)
 	{
-		data = create_data(philo->id, &mutex, arg, fork);
+		data = create_data(philo->id, &mutex, arg, stop);
 		if (!data)
 			return ;
 		data->time = time;
+		data->fork = fork;
 		if (pthread_create(&philo->thread, NULL, routine, data) != 0)
 			return ;
 		philo = philo->next;
@@ -79,6 +89,7 @@ void	start_program(t_arg arg, t_philo *philo, t_dishes *fork)
 			return ;
 		philo = philo->next;
 	}
+	free(stop);
 	pthread_mutex_destroy(&mutex);
 }
 

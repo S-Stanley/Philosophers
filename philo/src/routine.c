@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 02:01:11 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/06 19:32:53 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/06 19:41:21 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ void	*routine(void *arg)
 		if (ate == data->max_t_eat)
 			break ;
 	}
-	free(data->stop);
 	free(data);
 	return (NULL);
 }

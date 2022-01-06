@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/06 19:32:26 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/06 19:43:21 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 BOOL	eating(t_data *data, struct timeval start_time)
 {
+	if (data->stop[0])
+		return (FALSE);
 	printf("%ld philo %d has taken a fork\n", get_time(data->time), data->id);
 	printf("%ld philo %d has taken a fork\n", get_time(data->time), data->id);
 	printf("%ld philo %d is eating\n", get_time(data->time), data->id);
@@ -24,6 +26,8 @@ BOOL	eating(t_data *data, struct timeval start_time)
 
 BOOL	sleeping(t_data *data, struct timeval start_time)
 {
+	if (data->stop[0])
+		return (FALSE);
 	printf("%ld philo %d is sleeping\n", get_time(data->time), data->id);
 	if (!ft_sleep(data->t_sleep, data, start_time))
 		return (FALSE);
@@ -32,6 +36,8 @@ BOOL	sleeping(t_data *data, struct timeval start_time)
 
 void	thinking(t_data *data)
 {
+	if (data->stop[0])
+		return ;
 	printf("%ld philo %d is thinking\n", get_time(data->time), data->id);
 }
 
