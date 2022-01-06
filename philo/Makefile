@@ -6,7 +6,7 @@
 #    By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/12/05 23:16:06 by sserbin           #+#    #+#              #
-#    Updated: 2022/01/04 02:01:05 by sserbin          ###   ########.fr        #
+#    Updated: 2022/01/06 19:57:54 by sserbin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ SRCS= 	src/main.c src/fork.c src/ft_atoi.c src/mutex.c src/parsing.c \
 OBJS=$(SRCS:.c=.o)
 NAME = philo
 CC = clang
-FLAGS = -Wall -Wextra -Werror -pthread  -g # -fsanitize=address
+FLAGS = -Wall -Wextra -Werror -pthread
 RM = rm -rf
 
 all: $(NAME)
