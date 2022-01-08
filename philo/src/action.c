@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/08 17:39:13 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/08 19:06:34 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,23 +64,39 @@ void	thinking(t_data *data)
 BOOL	smallest_eat(t_philo *philo, unsigned int id)
 {
 	int		mine;
+	int		min;
 	t_philo	*tmp;
 
 	tmp = philo;
+	min = -1;
 	while (philo)
 	{
 		if (philo->id == id)
 			mine = philo->ate;
 		philo = philo->next;
 	}
-	while (tmp)
+	philo = tmp;
+	while (philo)
 	{
-		if (tmp->id != id)
+		if (min == -1)
+			min = philo->ate;
+		if (min != -1 && philo->ate < min)
+			min = philo->ate;
+		if (philo->id != id)
 		{
-			if (mine > tmp->ate)
+			if (mine > philo->ate)
 				return (0);
 		}
-		tmp = tmp->next;
+		philo = philo->next;
+	}
+	philo = tmp;
+	while (philo)
+	{
+		if (philo->id == id)
+			return (1);
+		if (philo->ate <= min && philo->ate <= mine)
+			return (0);
+		philo = philo->next;
 	}
 	return (1);
 }
