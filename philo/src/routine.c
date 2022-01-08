@@ -6,11 +6,26 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 02:01:11 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/06 19:41:21 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/08 19:13:58 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
+
+int	count_len_philo(t_philo *philo)
+{
+	int	count;
+
+	if (!philo)
+		return (0);
+	count = 0;
+	while (philo)
+	{
+		count++;
+		philo = philo->next;
+	}
+	return (count);
+}
 
 void	*routine(void *arg)
 {
