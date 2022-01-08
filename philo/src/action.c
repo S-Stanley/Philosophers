@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/08 19:19:29 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/08 19:35:00 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,34 @@ t_philo	*set_philo_ate(t_philo *philo, unsigned int id, long int time)
 	return (tmp);
 }
 
+BOOL	print_something(t_data *data, int content)
+{
+	pthread_mutex_lock(data->mutex);
+	if (data->stop[0])
+	{
+		pthread_mutex_unlock(data->mutex);
+		return (FALSE);
+	}
+	if (content == 0)
+		printf("%ld philo %d has taken a fork\n", get_time(data->time), data->id);
+	if (content == 1)
+		printf("%ld philo %d is eating\n", get_time(data->time), data->id);
+	if (content == 2)
+		printf("%ld philo %d is sleeping\n", get_time(data->time), data->id);
+	if (content == 3)
+		printf("%ld philo %d is thinking\n", get_time(data->time), data->id);
+	pthread_mutex_unlock(data->mutex);
+	return (TRUE);
+}
+
 BOOL	eating(t_data *data, struct timeval start_time)
 {
-	if (data->stop[0])
+	if (!print_something(data, 0))
 		return (FALSE);
-	printf("%ld philo %d has taken a fork\n", get_time(data->time), data->id);
-	printf("%ld philo %d has taken a fork\n", get_time(data->time), data->id);
-	printf("%ld philo %d is eating\n", get_time(data->time), data->id);
+	if (!print_something(data, 0))
+		return (FALSE);
+	if (!print_something(data, 1))
+		return (FALSE);
 	data->philo = set_philo_ate(data->philo, data->id, get_time(data->time));
 	if (!ft_sleep(data->t_eat, data, start_time))
 		return (FALSE);
@@ -45,19 +66,18 @@ BOOL	eating(t_data *data, struct timeval start_time)
 
 BOOL	sleeping(t_data *data, struct timeval start_time)
 {
-	if (data->stop[0])
+	if (!print_something(data, 2))
 		return (FALSE);
-	printf("%ld philo %d is sleeping\n", get_time(data->time), data->id);
 	if (!ft_sleep(data->t_sleep, data, start_time))
 		return (FALSE);
 	return (TRUE);
 }
 
-void	thinking(t_data *data)
+BOOL	thinking(t_data *data)
 {
-	if (data->stop[0])
-		return ;
-	printf("%ld philo %d is thinking\n", get_time(data->time), data->id);
+	if (!print_something(data, 3))
+		return (FALSE);
+	return (TRUE);
 }
 
 BOOL	smallest_eat(t_philo *philo, unsigned int id, int *stop)
@@ -118,7 +138,8 @@ BOOL	ft_loop1(t_data *data)
 	unlock_fork(data);
 	if (!sleeping(data, start_time))
 		return (FALSE);
-	thinking(data);
+	if (!thinking(data))
+		return (FALSE);
 	pthread_mutex_lock(data->mutex);
 	if (!check_philo_life(start_time, data))
 		return (FALSE);
@@ -131,7 +152,8 @@ BOOL	ft_loop2(t_data *data)
 	struct timeval	start_time;
 
 	gettimeofday(&start_time, NULL);
-	thinking(data);
+	if (!thinking(data))
+		return (FALSE);
 	if (!sleeping(data, start_time))
 		return (FALSE);
 	while (!smallest_eat(data->philo, data->id, data->stop))

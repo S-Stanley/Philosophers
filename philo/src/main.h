@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 23:01:02 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/08 16:36:36 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/08 19:31:10 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,5 +85,6 @@ void		free_philo(t_philo *philo);
 BOOL		ft_loop2(t_data *data);
 BOOL		ft_loop1(t_data *data);
 int			*create_stop_var(void);
+BOOL		print_something(t_data *data, int content);
 
 #endif
