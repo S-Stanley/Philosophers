@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 23:40:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/04 01:39:17 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/08 16:37:00 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ t_philo	*add_philo(int id, t_philo *philo)
 	if (!new)
 		return (NULL);
 	new->id = id + 1;
+	new->ate = 0;
 	new->next = NULL;
 	if (!philo)
 		return (new);

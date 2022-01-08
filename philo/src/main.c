@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/02 17:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/06 19:56:22 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/08 17:37:33 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,11 @@ BOOL	check_philo_life(struct timeval start_time, t_data *data)
 		pthread_mutex_unlock(data->mutex);
 		return (FALSE);
 	}
-	if (get_time(start_time) > data->t_die)
+	if (get_time(start_time) > (unsigned int)data->t_die)
 	{
 		if (data->stop[0])
 			return (FALSE);
+		printf("%ld philo %d is going to die because %ld %d\n",get_time(start_time), data->id, get_time(start_time), data->t_die);
 		printf("%ld philo %d died\n", get_time(data->time), data->id);
 		data->stop[0] = 1;
 		pthread_mutex_unlock(data->mutex);
@@ -79,6 +80,7 @@ void	start_program(t_arg arg, t_philo *philo, t_dishes *fork)
 			return ;
 		data->time = time;
 		data->fork = fork;
+		data->philo = tmp;
 		if (pthread_create(&philo->thread, NULL, routine, data) != 0)
 			return ;
 		philo = philo->next;

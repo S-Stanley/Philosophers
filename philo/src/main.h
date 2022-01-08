@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 23:01:02 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/06 19:54:45 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/08 16:36:36 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct s_couvert {
 typedef struct s_philo {
 	unsigned int	id;
 	pthread_t		thread;
+	int				ate;
 	void			*next;
 }	t_philo;
 
@@ -51,6 +52,7 @@ typedef struct s_data {
 	int				max_t_eat;
 	t_dishes		*fork;
 	int				*stop;
+	t_philo			*philo;
 }	t_data;
 
 typedef struct s_arg {
