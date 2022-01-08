@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/08 19:35:00 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/08 19:41:11 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,14 +80,19 @@ BOOL	thinking(t_data *data)
 	return (TRUE);
 }
 
-BOOL	smallest_eat(t_philo *philo, unsigned int id, int *stop)
+BOOL	smallest_eat(t_philo *philo, unsigned int id, int *stop, t_data *data)
 {
 	int		mine;
 	int		min;
 	t_philo	*tmp;
 
+	pthread_mutex_lock(data->mutex);
 	if (stop[0])
+	{
+		pthread_mutex_unlock(data->mutex);
 		return (TRUE);
+	}
+	pthread_mutex_unlock(data->mutex);
 	tmp = philo;
 	min = -1;
 	while (philo)
@@ -127,7 +132,7 @@ BOOL	ft_loop1(t_data *data)
 	struct timeval	start_time;
 
 	gettimeofday(&start_time, NULL);
-	while (!smallest_eat(data->philo, data->id, data->stop))
+	while (!smallest_eat(data->philo, data->id, data->stop, data))
 		usleep(1);
 	lock_fork(data);
 	if (!eating(data, start_time))
@@ -156,7 +161,7 @@ BOOL	ft_loop2(t_data *data)
 		return (FALSE);
 	if (!sleeping(data, start_time))
 		return (FALSE);
-	while (!smallest_eat(data->philo, data->id, data->stop))
+	while (!smallest_eat(data->philo, data->id, data->stop, data))
 		usleep(1);
 	lock_fork(data);
 	if (!eating(data, start_time))
