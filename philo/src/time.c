@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:59:27 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/06 19:54:34 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/09 18:46:09 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,10 @@ BOOL	ft_sleep(long int sleepingtime, t_data *data, struct timeval start_time)
 	{
 		while (sleepingtime > 0)
 		{
+			pthread_mutex_lock(data->mutex);
 			if (!check_philo_life(start_time, data))
 				return (FALSE);
+			pthread_mutex_unlock(data->mutex);
 			usleep(10 * 1000);
 			sleepingtime = sleepingtime - 10;
 		}

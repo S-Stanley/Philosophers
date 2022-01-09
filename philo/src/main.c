@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/02 17:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/08 19:35:06 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/09 18:50:47 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ t_data	*create_data(int id, pthread_mutex_t *mutex, t_arg arg, int *stop)
 	return (data);
 }
 
-void	join_philo(t_philo *philo, pthread_mutex_t mutex, int *stop)
+void	join_philo(t_philo *philo, int *stop)
 {
 	while (philo)
 	{
@@ -55,7 +55,6 @@ void	join_philo(t_philo *philo, pthread_mutex_t mutex, int *stop)
 		philo = philo->next;
 	}
 	free(stop);
-	pthread_mutex_destroy(&mutex);
 }
 
 void	start_program(t_arg arg, t_philo *philo, t_dishes *fork)
@@ -82,7 +81,8 @@ void	start_program(t_arg arg, t_philo *philo, t_dishes *fork)
 			return ;
 		philo = philo->next;
 	}
-	join_philo(tmp, mutex, stop);
+	join_philo(tmp, stop);
+	pthread_mutex_destroy(&mutex);
 }
 
 int	main(int argc, char **argv)

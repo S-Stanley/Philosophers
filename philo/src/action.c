@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/08 19:41:11 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/09 18:50:13 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,9 @@ BOOL	eating(t_data *data, struct timeval start_time)
 		return (FALSE);
 	if (!print_something(data, 1))
 		return (FALSE);
+	pthread_mutex_lock(data->mutex);
 	data->philo = set_philo_ate(data->philo, data->id, get_time(data->time));
+	pthread_mutex_unlock(data->mutex);
 	if (!ft_sleep(data->t_eat, data, start_time))
 		return (FALSE);
 	return (TRUE);
@@ -92,7 +94,6 @@ BOOL	smallest_eat(t_philo *philo, unsigned int id, int *stop, t_data *data)
 		pthread_mutex_unlock(data->mutex);
 		return (TRUE);
 	}
-	pthread_mutex_unlock(data->mutex);
 	tmp = philo;
 	min = -1;
 	while (philo)
@@ -111,7 +112,10 @@ BOOL	smallest_eat(t_philo *philo, unsigned int id, int *stop, t_data *data)
 		if (philo->id != id)
 		{
 			if (mine > philo->ate)
+			{
+				pthread_mutex_unlock(data->mutex);
 				return (0);
+			}
 		}
 		philo = philo->next;
 	}
@@ -119,11 +123,18 @@ BOOL	smallest_eat(t_philo *philo, unsigned int id, int *stop, t_data *data)
 	while (philo)
 	{
 		if (philo->id == id)
+		{
+			pthread_mutex_unlock(data->mutex);
 			return (1);
+		}
 		if (philo->ate <= min && philo->ate <= mine)
+		{
+			pthread_mutex_unlock(data->mutex);
 			return (0);
+		}
 		philo = philo->next;
 	}
+	pthread_mutex_unlock(data->mutex);
 	return (1);
 }
 
