@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 02:01:11 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/10 19:06:04 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/10 23:25:16 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,22 @@ void	*routine(void *arg)
 	data = (t_data *)arg;
 	i = 0;
 	size = count_len_philo(data->philo);
+	data->ate = 0;
 	while (TRUE)
 	{
-		if (data->id % 2)
+		if (data->id % 3 == 2)
 		{
 			if (!ft_loop1(data))
 				break ;
 		}
+		else if (data->id % 3 == 1)
+		{
+			if (!ft_loop2(data))
+				break ;
+		}
 		else
 		{
+			usleep(data->t_eat * 1000);
 			if (!ft_loop2(data))
 				break ;
 		}

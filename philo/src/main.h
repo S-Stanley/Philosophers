@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 23:01:02 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/08 19:31:10 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/10 23:12:59 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,10 @@ typedef struct s_data {
 	t_dishes		*fork;
 	int				*stop;
 	t_philo			*philo;
+	int				*eat_round_one;
+	int				*eat_round_two;
+	int				*eat_round_three;
+	int				ate;
 }	t_data;
 
 typedef struct s_arg {
