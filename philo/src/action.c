@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/10 23:29:22 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/10 23:51:10 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,8 +227,13 @@ BOOL	ft_loop2(t_data *data)
 	gettimeofday(&start_time, NULL);
 	if (!thinking(data))
 		return (FALSE);
+	couvert = get_philo_fork(data->id, data->fork);
 	if (data->id % 3 == 0)
+	{
+		if (!print_something(data, 0))
+			return (FALSE);
 		pthread_mutex_lock(&couvert.right->fork);
+	}
 	if (!sleeping(data, start_time))
 		return (FALSE);
 	// while (!smallest_eat(data->philo, data->id, data->stop, data))
