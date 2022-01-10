@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 02:01:11 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/09 19:40:18 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/10 19:06:04 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	*routine(void *arg)
 	data = (t_data *)arg;
 	i = 0;
 	size = count_len_philo(data->philo);
-	while (i < size)
+	while (TRUE)
 	{
 		if (data->id % 2)
 		{
