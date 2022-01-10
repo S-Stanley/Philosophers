@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/10 23:51:10 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 00:23:31 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,27 +164,62 @@ int	guess_grp(int nb)
 	return (group);
 }
 
+t_philo	*add_ate_to_philo(t_philo *philo, unsigned int id)
+{
+	t_philo	*tmp;
+
+	tmp = philo;
+	while (philo)
+	{
+		if (id == philo->id)
+			philo->ate++;
+		philo = philo->next;
+	}
+	return (tmp);
+}
+
+BOOL	did_all_ate(t_philo *philo, int grp, int *eat_round)
+{
+	while (philo)
+	{
+		if (guess_grp(philo->id) == grp)
+		{
+			if (eat_round[0] != philo->ate)
+				return (0);
+		}
+		philo = philo->next;
+	}
+	return (1);
+}
+
 int	can_he_eat(t_data *data)
 {
 	int		grp;
 
 	pthread_mutex_lock(data->mutex);
 	grp = guess_grp(data->id);
-	if (grp == 1 && data->ate < data->eat_round_one[0])
+	if (grp == 1 && data->ate < data->eat_round_one[0]
+		&& did_all_ate(data->philo, 2, data->eat_round_two)
+		&& did_all_ate(data->philo, 3, data->eat_round_three))
 	{
-		data->eat_round_two[0]++;
+		data->philo = add_ate_to_philo(data->philo, data->id);
+		if (did_all_ate(data->philo, grp, data->eat_round_one))
+			data->eat_round_two[0]++;
 		pthread_mutex_unlock(data->mutex);
 		return (1);
 	}
-	if (grp == 2 && data->ate < data->eat_round_two[0])
+	if (grp == 2 && data->ate < data->eat_round_two[0]
+		&& did_all_ate(data->philo, 1, data->eat_round_one))
 	{
-		data->eat_round_three[0]++;
+		data->philo = add_ate_to_philo(data->philo, data->id);
+		if (did_all_ate(data->philo, grp, data->eat_round_two))
+			data->eat_round_three[0]++;
 		pthread_mutex_unlock(data->mutex);
 		return (1);
 	}
 	if (grp == 3 && data->ate < data->eat_round_three[0])
 	{
-		data->eat_round_one[0]++;
+		data->philo = add_ate_to_philo(data->philo, data->id);
 		pthread_mutex_unlock(data->mutex);
 		return (1);
 	}
@@ -199,8 +234,8 @@ BOOL	ft_loop1(t_data *data)
 	gettimeofday(&start_time, NULL);
 	// while (!smallest_eat(data->philo, data->id, data->stop, data))
 	// 	usleep(1);
-	// while (!can_he_eat(data))
-	// 	usleep(1);
+	while (!can_he_eat(data))
+		usleep(1);
 	lock_fork(data);
 	if (!eating(data, start_time))
 	{
@@ -208,6 +243,8 @@ BOOL	ft_loop1(t_data *data)
 		return (FALSE);
 	}
 	unlock_fork(data);
+	if (guess_grp(data->id) == 3)
+		data->eat_round_one[0]++;
 	if (!sleeping(data, start_time))
 		return (FALSE);
 	if (!thinking(data))
@@ -222,24 +259,16 @@ BOOL	ft_loop1(t_data *data)
 BOOL	ft_loop2(t_data *data)
 {
 	struct timeval	start_time;
-	t_couvert		couvert;
 
 	gettimeofday(&start_time, NULL);
 	if (!thinking(data))
 		return (FALSE);
-	couvert = get_philo_fork(data->id, data->fork);
-	if (data->id % 3 == 0)
-	{
-		if (!print_something(data, 0))
-			return (FALSE);
-		pthread_mutex_lock(&couvert.right->fork);
-	}
 	if (!sleeping(data, start_time))
 		return (FALSE);
 	// while (!smallest_eat(data->philo, data->id, data->stop, data))
 	// 	usleep(1);
-	// while (!can_he_eat(data))
-	// 	usleep(1);
+	while (!can_he_eat(data))
+		usleep(1);
 	lock_fork(data);
 	if (!eating(data, start_time))
 	{

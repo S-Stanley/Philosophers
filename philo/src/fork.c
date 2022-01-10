@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:08:18 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/10 23:29:50 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 00:16:49 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,7 @@ void	lock_fork(t_data *data)
 
 	couvert = get_philo_fork(data->id, data->fork);
 	pthread_mutex_lock(&couvert.left->fork);
-	if (data->id % 3 != 0)
-		pthread_mutex_lock(&couvert.right->fork);
+	pthread_mutex_lock(&couvert.right->fork);
 }
 
 void	unlock_fork(t_data *data)
