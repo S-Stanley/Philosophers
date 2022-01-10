@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 00:23:31 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 00:48:19 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,20 +148,21 @@ BOOL	smallest_eat(t_philo *philo, unsigned int id, int *stop, t_data *data)
 
 int	guess_grp(int nb)
 {
-	int	group;
+	// int	group;
 
-	if (nb == 1 || nb == 2 || nb == 3)
-		return (nb);
-	group = 1;
-	while (nb != 0)
-	{
-		if (group == 3)
-			group = 1;
-		else
-			group++;
-		nb--;
-	}
-	return (group);
+	// if (nb == 1 || nb == 2 || nb == 3)
+	// 	return (nb);
+	// group = 1;
+	// while (nb != 0)
+	// {
+	// 	if (group == 3)
+	// 		group = 1;
+	// 	else
+	// 		group++;
+	// 	nb--;
+	// }
+	// return (group);
+	return ((nb % 3 )+ 1);
 }
 
 t_philo	*add_ate_to_philo(t_philo *philo, unsigned int id)
@@ -198,6 +199,7 @@ int	can_he_eat(t_data *data)
 
 	pthread_mutex_lock(data->mutex);
 	grp = guess_grp(data->id);
+	printf("%u %d %d %d %d %d\n", data->id, grp, data->ate, data->eat_round_one[0], did_all_ate(data->philo, 2, data->eat_round_two), did_all_ate(data->philo, 3, data->eat_round_three));
 	if (grp == 1 && data->ate < data->eat_round_one[0]
 		&& did_all_ate(data->philo, 2, data->eat_round_two)
 		&& did_all_ate(data->philo, 3, data->eat_round_three))
@@ -235,7 +237,7 @@ BOOL	ft_loop1(t_data *data)
 	// while (!smallest_eat(data->philo, data->id, data->stop, data))
 	// 	usleep(1);
 	while (!can_he_eat(data))
-		usleep(1);
+		usleep(1000*200);
 	lock_fork(data);
 	if (!eating(data, start_time))
 	{
@@ -268,7 +270,7 @@ BOOL	ft_loop2(t_data *data)
 	// while (!smallest_eat(data->philo, data->id, data->stop, data))
 	// 	usleep(1);
 	while (!can_he_eat(data))
-		usleep(1);
+		usleep(1000*200);
 	lock_fork(data);
 	if (!eating(data, start_time))
 	{

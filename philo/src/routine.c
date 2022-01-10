@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 02:01:11 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 00:16:31 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 00:49:52 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,19 +41,19 @@ void	*routine(void *arg)
 	data->ate = 0;
 	while (TRUE)
 	{
-		if (data->id % 3)
+		if (((data->id % 3) + 1) == 3)
 		{
 			if (!ft_loop1(data))
 				break ;
 		}
-		// else if (data->id % 3 == 1)
-		// {
-		// 	if (!ft_loop2(data))
-		// 		break ;
-		// }
+		else if (((data->id % 3) + 1) == 2)
+		{
+			if (!ft_loop2(data))
+				break ;
+		}
 		else
 		{
-			// usleep(data->t_eat * 1000);
+			usleep(data->t_eat * 1000);
 			if (!ft_loop2(data))
 				break ;
 		}
