@@ -6,11 +6,35 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/10 19:04:44 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/10 20:52:44 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
+
+/*
+	On check le nombre de groupe avec nb_philo % 2
+	Il faut que tous les philo du groupe mangent en meme temps
+	Le groupe 3 mange toujours en dernier
+	Si 1 a manger identique aue 2 et 3 alors 1 et tout son groupe mange. ensuite 2 puis 3.
+	Cette algo ne fonctionne que si le nombre de groupe est de 3 (je pense)
+*/
+
+int	guess_grp(int nb)
+{
+	int	group;
+
+	group = 0;
+	while (nb != 0)
+	{
+		if (group == 3)
+			group = 1;
+		else
+			group++;
+		nb--;
+	}
+	return (group);
+}
 
 t_philo	*set_philo_ate(t_philo *philo, unsigned int id, long int time)
 {
@@ -138,13 +162,53 @@ BOOL	smallest_eat(t_philo *philo, unsigned int id, int *stop, t_data *data)
 	return (1);
 }
 
+int	guess_grp(int nb)
+{
+	int	group;
+
+	group = 0;
+	while (nb != 0)
+	{
+		if (group == 3)
+			group = 1;
+		else
+			group++;
+		nb--;
+	}
+	return (group);
+}
+
+int	can_he_eat(t_data *data)
+{
+	t_philo	*philo;
+	int		min;
+	int		grp;
+
+	pthread_mutex_lock(data->mutex);
+	grp = guess_grp(data->id);
+	if (grp == 1)
+		if (ate_more_than_two_and_three(data->id, philo->ate))
+			return (1);
+	else if (grp == 2)
+	{
+		if (ate_more_than_three(data->id, philo->ate))
+			return (1);
+	}
+	else
+		if (ate_more_than_three(data->id, philo->ate))
+			return (1);
+	pthread_mutex_unlock(data->mutex);
+	return (0);
+}
+
 BOOL	ft_loop1(t_data *data)
 {
 	struct timeval	start_time;
 
 	gettimeofday(&start_time, NULL);
-	while (!smallest_eat(data->philo, data->id, data->stop, data))
-		usleep(1);
+	// while (!smallest_eat(data->philo, data->id, data->stop, data))
+	// 	usleep(1);
+	can_he_eat(data);
 	lock_fork(data);
 	if (!eating(data, start_time))
 	{
@@ -172,8 +236,9 @@ BOOL	ft_loop2(t_data *data)
 		return (FALSE);
 	if (!sleeping(data, start_time))
 		return (FALSE);
-	while (!smallest_eat(data->philo, data->id, data->stop, data))
-		usleep(1);
+	// while (!smallest_eat(data->philo, data->id, data->stop, data))
+	// 	usleep(1);
+	can_he_eat(data);
 	lock_fork(data);
 	if (!eating(data, start_time))
 	{
