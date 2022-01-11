@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 02:01:11 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 23:09:39 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 23:44:28 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,9 @@ void	*routine(void *arg)
 		free(data);
 		return (NULL);
 	}
-	// wait_a_little(data);
 	gettimeofday(&start_time, NULL);
+	if (count_len_philo(data->philo) % 3 == 0)
+		wait_a_little(data);
 	while (TRUE)
 	{
 		if (!ft_loop(data, &start_time))

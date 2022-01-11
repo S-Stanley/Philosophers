@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 23:08:57 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 23:45:16 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,5 +103,7 @@ BOOL	ft_loop(t_data *data, struct timeval *start_time)
 	if (!check_philo_life(*start_time, data))
 		return (FALSE);
 	pthread_mutex_unlock(data->mutex);
+	// if (count_len_philo(data->philo) % 3 == 0)
+	// 	usleep(data->t_eat * 1000);
 	return (TRUE);
 }
