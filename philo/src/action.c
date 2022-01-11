@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 21:43:16 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 23:08:57 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,28 +78,29 @@ void	wait_a_little(t_data *data)
 	}
 }
 
-BOOL	ft_loop1(t_data *data)
+BOOL	ft_loop(t_data *data, struct timeval *start_time)
 {
-	struct timeval	start_time;
-
-	wait_a_little(data);
-	gettimeofday(&start_time, NULL);
 	lock_fork(data);
-	if (!check_philo_life(start_time, data))
+	pthread_mutex_lock(data->mutex);
+	if (!check_philo_life(*start_time, data))
+	{
+		unlock_fork(data);
 		return (FALSE);
-	gettimeofday(&start_time, NULL);
-	if (!eating(data, start_time))
+	}
+	gettimeofday(start_time, NULL);
+	pthread_mutex_unlock(data->mutex);
+	if (!eating(data, *start_time))
 	{
 		unlock_fork(data);
 		return (FALSE);
 	}
 	unlock_fork(data);
-	if (!sleeping(data, start_time))
+	if (!sleeping(data, *start_time))
 		return (FALSE);
 	if (!thinking(data))
 		return (FALSE);
 	pthread_mutex_lock(data->mutex);
-	if (!check_philo_life(start_time, data))
+	if (!check_philo_life(*start_time, data))
 		return (FALSE);
 	pthread_mutex_unlock(data->mutex);
 	return (TRUE);

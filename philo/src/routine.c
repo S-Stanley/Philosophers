@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 02:01:11 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 21:36:30 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 23:09:39 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,10 @@ void	*routine(void *arg)
 {
 	t_data			*data;
 	int				ate;
-	int				i;
+	struct timeval	start_time;
 
 	ate = 0;
 	data = (t_data *)arg;
-	i = 0;
 	data->ate = 0;
 	if (count_len_philo(data->philo) == 1)
 	{
@@ -52,14 +51,15 @@ void	*routine(void *arg)
 		free(data);
 		return (NULL);
 	}
+	// wait_a_little(data);
+	gettimeofday(&start_time, NULL);
 	while (TRUE)
 	{
-		if (!ft_loop1(data))
+		if (!ft_loop(data, &start_time))
 			break ;
 		ate++;
 		if (ate == data->max_t_eat)
 			break ;
-		i++;
 	}
 	free(data);
 	return (NULL);
