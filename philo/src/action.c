@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 01:26:41 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 20:09:43 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,6 +233,10 @@ BOOL	ft_loop1(t_data *data)
 {
 	struct timeval	start_time;
 
+	if (data->id % 3 == 2)
+		usleep(200 * 1000);
+	if (data->id % 3 == 0)
+		usleep(400 * 1000);
 	gettimeofday(&start_time, NULL);
 	// while (!smallest_eat(data->philo, data->id, data->stop, data))
 	// 	usleep(1);
