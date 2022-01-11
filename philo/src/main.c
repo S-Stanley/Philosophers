@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/02 17:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 20:07:46 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 20:20:30 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,20 +64,11 @@ void	start_program(t_arg arg, t_philo *philo, t_dishes *fork)
 	pthread_mutex_t	mutex;
 	t_data			*data;
 	int				*stop;
-	int				*eat_round_one;
-	int				*eat_round_two;
-	int				*eat_round_three;
 
 	gettimeofday(&time, NULL);
 	tmp = philo;
 	pthread_mutex_init(&mutex, NULL);
 	stop = create_stop_var();
-	eat_round_one = malloc(sizeof(int));
-	eat_round_one[0] = 1;
-	eat_round_two = malloc(sizeof(int));
-	eat_round_two[0] = 0;
-	eat_round_three = malloc(sizeof(int));
-	eat_round_three[0] = 0;
 	while (philo)
 	{
 		data = create_data(philo->id, &mutex, arg, stop);
@@ -86,9 +77,6 @@ void	start_program(t_arg arg, t_philo *philo, t_dishes *fork)
 		data->time = time;
 		data->fork = fork;
 		data->philo = tmp;
-		data->eat_round_one = eat_round_one;
-		data->eat_round_two = eat_round_two;
-		data->eat_round_three = eat_round_three;
 		if (pthread_create(&philo->thread, NULL, routine, data) != 0)
 			return ;
 		philo = philo->next;

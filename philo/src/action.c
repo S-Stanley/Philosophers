@@ -6,29 +6,11 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 20:16:02 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 20:22:02 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
-
-t_philo	*set_philo_ate(t_philo *philo, unsigned int id, long int time)
-{
-	t_philo	*tmp;
-
-	tmp = philo;
-	while (philo)
-	{
-		if (philo->id == id)
-		{
-			philo->ate++;
-			(void)time;
-			break ;
-		}
-		philo = philo->next;
-	}
-	return (tmp);
-}
 
 BOOL	print_something(t_data *data, int content)
 {
@@ -58,9 +40,6 @@ BOOL	eating(t_data *data, struct timeval start_time)
 		return (FALSE);
 	if (!print_something(data, 1))
 		return (FALSE);
-	pthread_mutex_lock(data->mutex);
-	data->philo = set_philo_ate(data->philo, data->id, get_time(data->time));
-	pthread_mutex_unlock(data->mutex);
 	if (!ft_sleep(data->t_eat, data, start_time))
 		return (FALSE);
 	return (TRUE);
@@ -86,12 +65,13 @@ BOOL	ft_loop1(t_data *data)
 {
 	struct timeval	start_time;
 
+	gettimeofday(&start_time, NULL);
 	if (data->id % 3 == 2)
 		usleep(200 * 1000);
 	if (data->id % 3 == 0)
 		usleep(400 * 1000);
-	gettimeofday(&start_time, NULL);
 	lock_fork(data);
+	gettimeofday(&start_time, NULL);
 	if (!eating(data, start_time))
 	{
 		unlock_fork(data);
@@ -109,3 +89,28 @@ BOOL	ft_loop1(t_data *data)
 	// usleep(200 * 1000);
 	return (TRUE);
 }
+
+// BOOL	ft_loop1(t_data *data)
+// {
+// 	struct timeval	start_time;
+
+// 	gettimeofday(&start_time, NULL);
+// 	lock_fork(data);
+// 	gettimeofday(&start_time, NULL);
+// 	if (!eating(data, start_time))
+// 	{
+// 		unlock_fork(data);
+// 		return (FALSE);
+// 	}
+// 	unlock_fork(data);
+// 	if (!sleeping(data, start_time))
+// 		return (FALSE);
+// 	if (!thinking(data))
+// 		return (FALSE);
+// 	pthread_mutex_lock(data->mutex);
+// 	if (!check_philo_life(start_time, data))
+// 		return (FALSE);
+// 	pthread_mutex_unlock(data->mutex);
+// 	// usleep(200 * 1000);
+// 	return (TRUE);
+// }
