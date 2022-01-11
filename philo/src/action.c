@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 23:45:16 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 23:47:22 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,6 @@ BOOL	print_something(t_data *data, int content)
 
 BOOL	eating(t_data *data, struct timeval start_time)
 {
-	if (!print_something(data, 0))
-		return (FALSE);
-	if (!print_something(data, 0))
-		return (FALSE);
 	if (!print_something(data, 1))
 		return (FALSE);
 	if (!ft_sleep(data->t_eat, data, start_time))
