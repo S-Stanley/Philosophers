@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 00:48:19 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 01:26:41 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,8 +236,8 @@ BOOL	ft_loop1(t_data *data)
 	gettimeofday(&start_time, NULL);
 	// while (!smallest_eat(data->philo, data->id, data->stop, data))
 	// 	usleep(1);
-	while (!can_he_eat(data))
-		usleep(1000*200);
+	// while (!can_he_eat(data))
+	// 	usleep(1000*200);
 	lock_fork(data);
 	if (!eating(data, start_time))
 	{
@@ -245,8 +245,8 @@ BOOL	ft_loop1(t_data *data)
 		return (FALSE);
 	}
 	unlock_fork(data);
-	if (guess_grp(data->id) == 3)
-		data->eat_round_one[0]++;
+	// if (guess_grp(data->id) == 3)
+	// 	data->eat_round_one[0]++;
 	if (!sleeping(data, start_time))
 		return (FALSE);
 	if (!thinking(data))
@@ -255,6 +255,7 @@ BOOL	ft_loop1(t_data *data)
 	if (!check_philo_life(start_time, data))
 		return (FALSE);
 	pthread_mutex_unlock(data->mutex);
+	// ft_sleep(1000 * (50), data, start_time);
 	return (TRUE);
 }
 
@@ -269,9 +270,11 @@ BOOL	ft_loop2(t_data *data)
 		return (FALSE);
 	// while (!smallest_eat(data->philo, data->id, data->stop, data))
 	// 	usleep(1);
-	while (!can_he_eat(data))
-		usleep(1000*200);
+	// while (!can_he_eat(data))
+	// 	usleep(1000*200);
 	lock_fork(data);
+	// if (guess_grp(data->id) == 3)
+	// 	data->eat_round_one[0]++;
 	if (!eating(data, start_time))
 	{
 		unlock_fork(data);
@@ -282,5 +285,6 @@ BOOL	ft_loop2(t_data *data)
 	if (!check_philo_life(start_time, data))
 		return (FALSE);
 	pthread_mutex_unlock(data->mutex);
+	// ft_sleep(1000 * (50), data, start_time);
 	return (TRUE);
 }
