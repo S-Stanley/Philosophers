@@ -6,19 +6,11 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 20:09:43 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 20:16:02 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
-
-/*
-	On check le nombre de groupe avec nb_philo % 2
-	Il faut que tous les philo du groupe mangent en meme temps
-	Le groupe 3 mange toujours en dernier
-	Si 1 a manger identique aue 2 et 3 alors 1 et tout son groupe mange. ensuite 2 puis 3.
-	Cette algo ne fonctionne que si le nombre de groupe est de 3 (je pense)
-*/
 
 t_philo	*set_philo_ate(t_philo *philo, unsigned int id, long int time)
 {
@@ -90,145 +82,6 @@ BOOL	thinking(t_data *data)
 	return (TRUE);
 }
 
-BOOL	smallest_eat(t_philo *philo, unsigned int id, int *stop, t_data *data)
-{
-	int		mine;
-	int		min;
-	t_philo	*tmp;
-
-	pthread_mutex_lock(data->mutex);
-	if (stop[0])
-	{
-		pthread_mutex_unlock(data->mutex);
-		return (TRUE);
-	}
-	tmp = philo;
-	min = -1;
-	while (philo)
-	{
-		if (philo->id == id)
-			mine = philo->ate;
-		philo = philo->next;
-	}
-	philo = tmp;
-	while (philo)
-	{
-		if (min == -1)
-			min = philo->ate;
-		if (min != -1 && philo->ate < min)
-			min = philo->ate;
-		if (philo->id != id)
-		{
-			if (mine > philo->ate)
-			{
-				pthread_mutex_unlock(data->mutex);
-				return (0);
-			}
-		}
-		philo = philo->next;
-	}
-	philo = tmp;
-	while (philo)
-	{
-		if (philo->id == id)
-		{
-			pthread_mutex_unlock(data->mutex);
-			return (1);
-		}
-		if (philo->ate <= min && philo->ate <= mine)
-		{
-			pthread_mutex_unlock(data->mutex);
-			return (0);
-		}
-		philo = philo->next;
-	}
-	pthread_mutex_unlock(data->mutex);
-	return (1);
-}
-
-int	guess_grp(int nb)
-{
-	// int	group;
-
-	// if (nb == 1 || nb == 2 || nb == 3)
-	// 	return (nb);
-	// group = 1;
-	// while (nb != 0)
-	// {
-	// 	if (group == 3)
-	// 		group = 1;
-	// 	else
-	// 		group++;
-	// 	nb--;
-	// }
-	// return (group);
-	return ((nb % 3 )+ 1);
-}
-
-t_philo	*add_ate_to_philo(t_philo *philo, unsigned int id)
-{
-	t_philo	*tmp;
-
-	tmp = philo;
-	while (philo)
-	{
-		if (id == philo->id)
-			philo->ate++;
-		philo = philo->next;
-	}
-	return (tmp);
-}
-
-BOOL	did_all_ate(t_philo *philo, int grp, int *eat_round)
-{
-	while (philo)
-	{
-		if (guess_grp(philo->id) == grp)
-		{
-			if (eat_round[0] != philo->ate)
-				return (0);
-		}
-		philo = philo->next;
-	}
-	return (1);
-}
-
-int	can_he_eat(t_data *data)
-{
-	int		grp;
-
-	pthread_mutex_lock(data->mutex);
-	grp = guess_grp(data->id);
-	printf("%u %d %d %d %d %d\n", data->id, grp, data->ate, data->eat_round_one[0], did_all_ate(data->philo, 2, data->eat_round_two), did_all_ate(data->philo, 3, data->eat_round_three));
-	if (grp == 1 && data->ate < data->eat_round_one[0]
-		&& did_all_ate(data->philo, 2, data->eat_round_two)
-		&& did_all_ate(data->philo, 3, data->eat_round_three))
-	{
-		data->philo = add_ate_to_philo(data->philo, data->id);
-		if (did_all_ate(data->philo, grp, data->eat_round_one))
-			data->eat_round_two[0]++;
-		pthread_mutex_unlock(data->mutex);
-		return (1);
-	}
-	if (grp == 2 && data->ate < data->eat_round_two[0]
-		&& did_all_ate(data->philo, 1, data->eat_round_one))
-	{
-		data->philo = add_ate_to_philo(data->philo, data->id);
-		if (did_all_ate(data->philo, grp, data->eat_round_two))
-			data->eat_round_three[0]++;
-		pthread_mutex_unlock(data->mutex);
-		return (1);
-	}
-	if (grp == 3 && data->ate < data->eat_round_three[0])
-	{
-		data->philo = add_ate_to_philo(data->philo, data->id);
-		pthread_mutex_unlock(data->mutex);
-		return (1);
-	}
-	pthread_mutex_unlock(data->mutex);
-	return (0);
-}
-
 BOOL	ft_loop1(t_data *data)
 {
 	struct timeval	start_time;
@@ -238,10 +91,6 @@ BOOL	ft_loop1(t_data *data)
 	if (data->id % 3 == 0)
 		usleep(400 * 1000);
 	gettimeofday(&start_time, NULL);
-	// while (!smallest_eat(data->philo, data->id, data->stop, data))
-	// 	usleep(1);
-	// while (!can_he_eat(data))
-	// 	usleep(1000*200);
 	lock_fork(data);
 	if (!eating(data, start_time))
 	{
@@ -249,8 +98,6 @@ BOOL	ft_loop1(t_data *data)
 		return (FALSE);
 	}
 	unlock_fork(data);
-	// if (guess_grp(data->id) == 3)
-	// 	data->eat_round_one[0]++;
 	if (!sleeping(data, start_time))
 		return (FALSE);
 	if (!thinking(data))
@@ -259,36 +106,6 @@ BOOL	ft_loop1(t_data *data)
 	if (!check_philo_life(start_time, data))
 		return (FALSE);
 	pthread_mutex_unlock(data->mutex);
-	// ft_sleep(1000 * (50), data, start_time);
-	return (TRUE);
-}
-
-BOOL	ft_loop2(t_data *data)
-{
-	struct timeval	start_time;
-
-	gettimeofday(&start_time, NULL);
-	if (!thinking(data))
-		return (FALSE);
-	if (!sleeping(data, start_time))
-		return (FALSE);
-	// while (!smallest_eat(data->philo, data->id, data->stop, data))
-	// 	usleep(1);
-	// while (!can_he_eat(data))
-	// 	usleep(1000*200);
-	lock_fork(data);
-	// if (guess_grp(data->id) == 3)
-	// 	data->eat_round_one[0]++;
-	if (!eating(data, start_time))
-	{
-		unlock_fork(data);
-		return (FALSE);
-	}
-	unlock_fork(data);
-	pthread_mutex_lock(data->mutex);
-	if (!check_philo_life(start_time, data))
-		return (FALSE);
-	pthread_mutex_unlock(data->mutex);
-	// ft_sleep(1000 * (50), data, start_time);
+	// usleep(200 * 1000);
 	return (TRUE);
 }
