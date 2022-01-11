@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 23:01:02 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 21:00:49 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 21:24:06 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,5 +92,7 @@ int			*create_stop_var(void);
 BOOL		print_something(t_data *data, int content);
 t_couvert	get_philo_fork(unsigned int id, t_dishes *fork);
 BOOL		is_arg_correct(char **argv, t_arg arg, int argc);
+int			count_len_philo(t_philo *philo);
+void		wait_a_little(t_data *data);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 20:25:16 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 21:43:16 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,16 +62,31 @@ BOOL	thinking(t_data *data)
 	return (TRUE);
 }
 
+void	wait_a_little(t_data *data)
+{
+	if (count_len_philo(data->philo) % 2)
+	{
+		if (data->id % 3 == 2)
+			usleep(data->t_eat * 1000);
+		if (data->id % 3 == 0)
+			usleep((data->t_eat + data->t_sleep - 100) * 1000);
+	}
+	else
+	{
+		if (data->id % 2 == 0)
+			usleep(data->t_eat * 1000);
+	}
+}
+
 BOOL	ft_loop1(t_data *data)
 {
 	struct timeval	start_time;
 
+	wait_a_little(data);
 	gettimeofday(&start_time, NULL);
-	if (data->id % 3 == 2)
-		usleep(200 * 1000);
-	if (data->id % 3 == 0)
-		usleep(400 * 1000);
 	lock_fork(data);
+	if (!check_philo_life(start_time, data))
+		return (FALSE);
 	gettimeofday(&start_time, NULL);
 	if (!eating(data, start_time))
 	{

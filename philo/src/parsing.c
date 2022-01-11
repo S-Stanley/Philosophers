@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 23:03:52 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 21:07:59 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 21:10:27 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ BOOL	is_arg_correct(char **argv, t_arg arg, int argc)
 	}
 	if (arg.nbr_philo > 200)
 		return (FALSE);
-	if (arg.t_die < 60)
+	if (arg.t_die < 60 || arg.t_eat < 60 || arg.t_sleep < 60)
 		return (FALSE);
 	if (arg.max_t_eat <= 0 && argc == 6)
 		return (FALSE);

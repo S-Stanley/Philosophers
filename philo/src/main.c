@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/02 17:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 21:00:59 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 21:31:47 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ BOOL	check_philo_life(struct timeval start_time, t_data *data)
 	if (get_time(start_time) > (unsigned int)data->t_die)
 	{
 		data->stop[0] = 1;
+		printf("%ld\n", get_time(start_time));
 		printf("%ld philo %d died\n", get_time(data->time), data->id);
 		pthread_mutex_unlock(data->mutex);
 		return (FALSE);
