@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/02 17:52:15 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 20:20:30 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 21:00:59 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ int	main(int argc, char **argv)
 	if (check_error_arg(argc, argv))
 		return (0);
 	arg = setup_arg(argc, argv);
+	if (!is_arg_correct(argv, arg, argc))
+		return (0);
 	philo = setup_philo(arg);
 	if (!philo)
 		return (0);

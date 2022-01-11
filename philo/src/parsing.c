@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/03 23:03:52 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 20:44:20 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 21:07:59 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ BOOL	print_and_return(void)
 	return (TRUE);
 }
 
-BOOL	is_arg_correct(char **argv, t_arg arg)
+BOOL	is_arg_correct(char **argv, t_arg arg, int argc)
 {
 	int		i;
 
@@ -41,6 +41,15 @@ BOOL	is_arg_correct(char **argv, t_arg arg)
 			return (FALSE);
 		i++;
 	}
+	if (arg.nbr_philo > 200)
+		return (FALSE);
+	if (arg.t_die < 60)
+		return (FALSE);
+	if (arg.max_t_eat <= 0 && argc == 6)
+		return (FALSE);
+	if (arg.nbr_philo <= 0 || arg.t_die <= 0
+		|| arg.t_eat <= 0 || arg.t_sleep <= 0)
+		return (FALSE);
 	return (TRUE);
 }
 
@@ -85,6 +94,5 @@ t_arg	setup_arg(int argc, char **argv)
 		arg.max_t_eat = ft_atoi(argv[5]);
 	else
 		arg.max_t_eat = -1;
-	printf("%d %d %d %d %d\n", arg.nbr_philo, arg.t_die, arg.t_eat, arg.t_sleep, arg.max_t_eat);
 	return (arg);
 }
