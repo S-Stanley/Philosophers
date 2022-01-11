@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:58:50 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 20:22:02 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/11 20:25:16 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ BOOL	print_something(t_data *data, int content)
 		return (FALSE);
 	}
 	if (content == 0)
-		printf("%ld philo %d has taken a fork\n", get_time(data->time), data->id);
+		printf("%ld philo %d has taken a fork\n",
+			get_time(data->time), data->id);
 	if (content == 1)
 		printf("%ld philo %d is eating\n", get_time(data->time), data->id);
 	if (content == 2)
@@ -86,31 +87,5 @@ BOOL	ft_loop1(t_data *data)
 	if (!check_philo_life(start_time, data))
 		return (FALSE);
 	pthread_mutex_unlock(data->mutex);
-	// usleep(200 * 1000);
 	return (TRUE);
 }
-
-// BOOL	ft_loop1(t_data *data)
-// {
-// 	struct timeval	start_time;
-
-// 	gettimeofday(&start_time, NULL);
-// 	lock_fork(data);
-// 	gettimeofday(&start_time, NULL);
-// 	if (!eating(data, start_time))
-// 	{
-// 		unlock_fork(data);
-// 		return (FALSE);
-// 	}
-// 	unlock_fork(data);
-// 	if (!sleeping(data, start_time))
-// 		return (FALSE);
-// 	if (!thinking(data))
-// 		return (FALSE);
-// 	pthread_mutex_lock(data->mutex);
-// 	if (!check_philo_life(start_time, data))
-// 		return (FALSE);
-// 	pthread_mutex_unlock(data->mutex);
-// 	// usleep(200 * 1000);
-// 	return (TRUE);
-// }
