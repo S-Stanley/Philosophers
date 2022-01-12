@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/12 19:24:12 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/12 21:50:26 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,5 +164,6 @@ int	main(void)
 		i++;
 	}
 	destroy_mutex(forks);
+	free(forks);
 	return (0);
 }
