@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/12 23:59:41 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/13 00:08:46 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,15 @@ long int	get_time(struct timeval time)
 				+ ((now.tv_sec - time.tv_sec -1) * max)) / 1000);
 }
 
-BOOL	print_something(t_data *data, int content)
+BOOL	print_something(t_data *data, int content, struct timeval *start_time)
 {
 	pthread_mutex_lock(data->commun_mutex);
+	if (get_time(*start_time) >= data->t_die)
+	{
+		printf("%ld philo %u died\n", get_time(data->prog_time_start), data->id);
+		pthread_mutex_unlock(data->commun_mutex);
+		exit(0);
+	}
 	if (data->stop[0])
 	{
 		pthread_mutex_unlock(data->commun_mutex);
@@ -51,39 +57,39 @@ BOOL	print_something(t_data *data, int content)
 	return (TRUE);
 }
 
-void	lock_fork(t_data *data)
+void	lock_fork(t_data *data, struct timeval *start_time)
 {
 	if (data->id == data->nbr_philo)
 	{
 		pthread_mutex_lock(&data->forks[data->id - 1]);
-		if (!print_something(data, 0))
+		if (!print_something(data, 0, start_time))
 			return ;
 		pthread_mutex_lock(&data->forks[0]);
-		if (!print_something(data, 0))
+		if (!print_something(data, 0, start_time))
 			return ;
 	}
 	else
 	{
 		pthread_mutex_lock(&data->forks[data->id - 1]);
-		if (!print_something(data, 0))
+		if (!print_something(data, 0, start_time))
 			return ;
 		pthread_mutex_lock(&data->forks[data->id]);
-		if (!print_something(data, 0))
+		if (!print_something(data, 0, start_time))
 			return ;
 	}	
 }
 
 void	eating(t_data *data, struct timeval *start_time)
 {
-	lock_fork(data);
+	lock_fork(data, start_time);
 	if (get_time(*start_time) >= data->t_die)
 	{
 		pthread_mutex_lock(data->commun_mutex);
-		printf("%ld philo %u died\n", get_time(*start_time), data->id);
+		printf("%ld philo %u died\n", get_time(data->prog_time_start), data->id);
 		pthread_mutex_unlock(data->commun_mutex);
 		exit(0);
 	}
-	if (!print_something(data, 1))
+	if (!print_something(data, 1, start_time))
 		return ;
 	// printf("**** philo %d max %ld ****\n", data->id, get_time(*start_time));
 	gettimeofday(start_time, NULL);
@@ -112,10 +118,10 @@ void	*routine(void *arg)
 		ate++;
 		if (data->max_t_eat > 0 && ate == data->max_t_eat)
 			break ;
-		if (!print_something(data, 2))
+		if (!print_something(data, 2, &start_time))
 			break ;
 		usleep(data->t_sleep * 1000);
-		if (!print_something(data, 3))
+		if (!print_something(data, 3, &start_time))
 			break ;
 	}
 	free(arg);
