@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/12 23:23:38 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/12 23:36:53 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,15 @@ void	eating(t_data *data, struct timeval *start_time)
 	lock_fork(data);
 	if (get_time(*start_time) >= data->t_die)
 	{
+		pthread_mutex_lock(data->commun_mutex);
 		printf("%ld philo %u died\n", get_time(*start_time), data->id);
+		pthread_mutex_unlock(data->commun_mutex);
 		exit(0);
 	}
+	pthread_mutex_lock(data->commun_mutex);
 	printf("%ld philo %d is eating\n",
 		get_time(data->prog_time_start), data->id);
+	pthread_mutex_unlock(data->commun_mutex);
 	// printf("**** philo %d max %ld ****\n", data->id, get_time(*start_time));
 	gettimeofday(start_time, NULL);
 	usleep(data->t_eat * 1000);
