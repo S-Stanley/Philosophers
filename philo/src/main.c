@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/12 19:19:13 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/12 19:24:12 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,6 @@ int	main(void)
 
 	i = 0;
 	forks = malloc(sizeof(pthread_mutex_t) * NB_PHILO);
-	if (!forks)
 	init_mutex(forks);
 	gettimeofday(&prog_time_start, NULL);
 	while (i < NB_PHILO)
