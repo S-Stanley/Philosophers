@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/12 19:14:49 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/12 19:19:13 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #define TIME_TO_DIE		410
 #define TIME_TO_SLEEP	200
 #define TIME_TO_EAT		200
+#define MAX_TIME_EAT	5
 
 typedef struct s_data {
 	int				id;
@@ -72,8 +73,9 @@ void	eating(t_data *data, struct timeval *start_time)
 		printf("%ld philo %u died\n", get_time(*start_time), data->id);
 		exit(0);
 	}
-	printf("%ld philo %d is eating\n", get_time(data->prog_time_start), data->id);
-	printf("**** philo %d max %ld ****\n", data->id, get_time(*start_time));
+	printf("%ld philo %d is eating\n",
+		get_time(data->prog_time_start), data->id);
+	// printf("**** philo %d max %ld ****\n", data->id, get_time(*start_time));
 	gettimeofday(start_time, NULL);
 	usleep(TIME_TO_EAT * 1000);
 	pthread_mutex_unlock(&data->forks[data->id - 1]);
@@ -87,14 +89,19 @@ void	*routine(void *arg)
 {
 	t_data			*data;
 	struct timeval	start_time;
+	int				ate;
 
 	data = (t_data *)arg;
 	gettimeofday(&start_time, NULL);
 	if (data->id % 2)
 		usleep(200 * 1000);
+	ate = 0;
 	while (1)
 	{
 		eating(data, &start_time);
+		ate++;
+		if (MAX_TIME_EAT > 0 && ate == MAX_TIME_EAT)
+			break ;
 		printf("%ld philo %d is sleeping\n",
 			get_time(data->prog_time_start), data->id);
 		usleep(TIME_TO_SLEEP * 1000);
@@ -139,6 +146,7 @@ int	main(void)
 
 	i = 0;
 	forks = malloc(sizeof(pthread_mutex_t) * NB_PHILO);
+	if (!forks)
 	init_mutex(forks);
 	gettimeofday(&prog_time_start, NULL);
 	while (i < NB_PHILO)
