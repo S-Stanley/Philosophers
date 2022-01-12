@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/12 01:41:03 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/12 18:58:01 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-#define NB_PHILO	4
+#define NB_PHILO	2
+#define TIME_TO_DIE	410
 
 typedef struct s_data {
 	int				id;
@@ -40,18 +41,38 @@ long int	get_time(struct timeval time)
 
 void	eating(t_data *data, struct timeval *start_time)
 {
-	pthread_mutex_lock(&data->forks[data->id - 1]);
-	printf("%ld philo %d has taken a fork\n",
-		get_time(*start_time), data->id);
-	pthread_mutex_lock(&data->forks[data->id]);
-	printf("%ld philo %d has taken a fork\n",
-		get_time(*start_time), data->id);
+	if (data->id == NB_PHILO)
+	{
+		pthread_mutex_lock(&data->forks[data->id - 1]);
+		printf("%ld philo %d has taken a fork\n",
+			get_time(*start_time), data->id);
+		pthread_mutex_lock(&data->forks[0]);
+		printf("%ld philo %d has taken a fork\n",
+			get_time(*start_time), data->id);
+	}
+	else
+	{
+		pthread_mutex_lock(&data->forks[data->id - 1]);
+		printf("%ld philo %d has taken a fork\n",
+			get_time(*start_time), data->id);
+		pthread_mutex_lock(&data->forks[data->id]);
+		printf("%ld philo %d has taken a fork\n",
+			get_time(*start_time), data->id);
+	}
+	if (get_time(*start_time) > TIME_TO_DIE)
+	{
+		printf("%ld philo %u died\n", get_time(*start_time), data->id);
+		exit(0);
+	}
 	printf("**** philo %d max %ld ****\n", data->id, get_time(*start_time));
 	gettimeofday(start_time, NULL);
 	printf("%ld philo %d is eating\n", get_time(*start_time), data->id);
 	usleep(200 * 1000);
 	pthread_mutex_unlock(&data->forks[data->id - 1]);
-	pthread_mutex_unlock(&data->forks[data->id]);
+	if (data->id == NB_PHILO)
+		pthread_mutex_unlock(&data->forks[0]);
+	else
+		pthread_mutex_unlock(&data->forks[data->id]);
 }
 
 void	*routine(void *arg)
