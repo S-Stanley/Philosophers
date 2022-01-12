@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/12 23:11:34 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/12 23:23:38 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,21 +31,25 @@ void	lock_fork(t_data *data)
 {
 	if (data->id == data->nbr_philo)
 	{
+		pthread_mutex_lock(data->commun_mutex);
 		pthread_mutex_lock(&data->forks[data->id - 1]);
 		printf("%ld philo %d has taken a fork\n",
 			get_time(data->prog_time_start), data->id);
 		pthread_mutex_lock(&data->forks[0]);
 		printf("%ld philo %d has taken a fork\n",
 			get_time(data->prog_time_start), data->id);
+		pthread_mutex_unlock(data->commun_mutex);
 	}
 	else
 	{
+		pthread_mutex_lock(data->commun_mutex);
 		pthread_mutex_lock(&data->forks[data->id - 1]);
 		printf("%ld philo %d has taken a fork\n",
 			get_time(data->prog_time_start), data->id);
 		pthread_mutex_lock(&data->forks[data->id]);
 		printf("%ld philo %d has taken a fork\n",
 			get_time(data->prog_time_start), data->id);
+		pthread_mutex_unlock(data->commun_mutex);
 	}	
 }
 
@@ -86,11 +90,15 @@ void	*routine(void *arg)
 		ate++;
 		if (data->max_t_eat > 0 && ate == data->max_t_eat)
 			break ;
+		pthread_mutex_lock(data->commun_mutex);
 		printf("%ld philo %d is sleeping\n",
 			get_time(data->prog_time_start), data->id);
+		pthread_mutex_unlock(data->commun_mutex);
 		usleep(data->t_sleep * 1000);
+		pthread_mutex_lock(data->commun_mutex);
 		printf("%ld philo %d is thinking\n",
 			get_time(data->prog_time_start), data->id);
+		pthread_mutex_unlock(data->commun_mutex);
 	}
 	free(arg);
 	return (arg);
@@ -103,10 +111,13 @@ void	ft_philo(t_arg arg)
 	unsigned int	i;
 	t_data			*data;
 	struct timeval	prog_time_start;
+	pthread_mutex_t	*commun_mutex;
 
+	commun_mutex = malloc(sizeof(pthread_mutex_t));
 	i = 0;
 	forks = malloc(sizeof(pthread_mutex_t) * arg.nbr_philo);
 	init_mutex(forks, arg.nbr_philo);
+	pthread_mutex_init(commun_mutex, NULL);
 	gettimeofday(&prog_time_start, NULL);
 	while (i < arg.nbr_philo)
 	{
@@ -119,6 +130,7 @@ void	ft_philo(t_arg arg)
 		data->t_die = arg.t_die;
 		data->max_t_eat = arg.max_t_eat;
 		data->nbr_philo = arg.nbr_philo;
+		data->commun_mutex = commun_mutex;
 		pthread_create(&threads[i], NULL, routine, data);
 		i++;
 	}
@@ -128,8 +140,10 @@ void	ft_philo(t_arg arg)
 		pthread_join(threads[i], NULL);
 		i++;
 	}
+	pthread_mutex_destroy(commun_mutex);
 	destroy_mutex(forks, arg.nbr_philo);
 	free(forks);
+	free(commun_mutex);
 }
 
 int	main(int argc, char **argv)
