@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/12 23:40:56 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/12 23:58:36 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,33 +27,49 @@ long int	get_time(struct timeval time)
 				+ ((now.tv_sec - time.tv_sec -1) * max)) / 1000);
 }
 
+BOOL	print_something(t_data *data, int content)
+{
+	pthread_mutex_lock(data->commun_mutex);
+	if (data->stop[0])
+	{
+		pthread_mutex_unlock(data->commun_mutex);
+		return (FALSE);
+	}
+	if (content == 0)
+		printf("%ld philo %u has taken a fork\n",
+			get_time(data->prog_time_start), data->id);
+	if (content == 1)
+		printf("%ld philo %u is eating\n",
+			get_time(data->prog_time_start), data->id);
+	if (content == 2)
+		printf("%ld philo %u is sleeping\n",
+			get_time(data->prog_time_start), data->id);
+	if (content == 3)
+		printf("%ld philo %u is thinking\n",
+			get_time(data->prog_time_start), data->id);
+	pthread_mutex_unlock(data->commun_mutex);
+	return (TRUE);
+}
+
 void	lock_fork(t_data *data)
 {
 	if (data->id == data->nbr_philo)
 	{
 		pthread_mutex_lock(&data->forks[data->id - 1]);
-		pthread_mutex_lock(data->commun_mutex);
-		printf("%ld philo %d has taken a fork\n",
-			get_time(data->prog_time_start), data->id);
-		pthread_mutex_unlock(data->commun_mutex);
+		if (!print_something(data, 0))
+			return ;
 		pthread_mutex_lock(&data->forks[0]);
-		pthread_mutex_lock(data->commun_mutex);
-		printf("%ld philo %d has taken a fork\n",
-			get_time(data->prog_time_start), data->id);
-		pthread_mutex_unlock(data->commun_mutex);
+		if (!print_something(data, 0))
+			return ;
 	}
 	else
 	{
 		pthread_mutex_lock(&data->forks[data->id - 1]);
-		pthread_mutex_lock(data->commun_mutex);
-		printf("%ld philo %d has taken a fork\n",
-			get_time(data->prog_time_start), data->id);
-		pthread_mutex_unlock(data->commun_mutex);
+		if (!print_something(data, 0))
+			return ;
 		pthread_mutex_lock(&data->forks[data->id]);
-		pthread_mutex_lock(data->commun_mutex);
-		printf("%ld philo %d has taken a fork\n",
-			get_time(data->prog_time_start), data->id);
-		pthread_mutex_unlock(data->commun_mutex);
+		if (!print_something(data, 0))
+			return ;
 	}	
 }
 
@@ -67,10 +83,8 @@ void	eating(t_data *data, struct timeval *start_time)
 		pthread_mutex_unlock(data->commun_mutex);
 		exit(0);
 	}
-	pthread_mutex_lock(data->commun_mutex);
-	printf("%ld philo %d is eating\n",
-		get_time(data->prog_time_start), data->id);
-	pthread_mutex_unlock(data->commun_mutex);
+	if (!print_something(data, 1))
+		return ;
 	// printf("**** philo %d max %ld ****\n", data->id, get_time(*start_time));
 	gettimeofday(start_time, NULL);
 	usleep(data->t_eat * 1000);
@@ -98,15 +112,11 @@ void	*routine(void *arg)
 		ate++;
 		if (data->max_t_eat > 0 && ate == data->max_t_eat)
 			break ;
-		pthread_mutex_lock(data->commun_mutex);
-		printf("%ld philo %d is sleeping\n",
-			get_time(data->prog_time_start), data->id);
-		pthread_mutex_unlock(data->commun_mutex);
+		if (!print_something(data, 2))
+			break ;
 		usleep(data->t_sleep * 1000);
-		pthread_mutex_lock(data->commun_mutex);
-		printf("%ld philo %d is thinking\n",
-			get_time(data->prog_time_start), data->id);
-		pthread_mutex_unlock(data->commun_mutex);
+		if (!print_something(data, 3))
+			break ;
 	}
 	free(arg);
 	return (arg);
@@ -120,7 +130,10 @@ void	ft_philo(t_arg arg)
 	t_data			*data;
 	struct timeval	prog_time_start;
 	pthread_mutex_t	*commun_mutex;
+	int				*stop;
 
+	stop = malloc(sizeof(int));
+	stop[0] = 0;
 	commun_mutex = malloc(sizeof(pthread_mutex_t));
 	i = 0;
 	forks = malloc(sizeof(pthread_mutex_t) * arg.nbr_philo);
@@ -139,6 +152,7 @@ void	ft_philo(t_arg arg)
 		data->max_t_eat = arg.max_t_eat;
 		data->nbr_philo = arg.nbr_philo;
 		data->commun_mutex = commun_mutex;
+		data->stop = stop;
 		pthread_create(&threads[i], NULL, routine, data);
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 22:53:19 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/12 23:23:45 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/12 23:54:33 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct s_data {
 	int				max_t_eat;
 	unsigned int	nbr_philo;
 	pthread_mutex_t	*commun_mutex;
+	int				*stop;
 }	t_data;
 
 typedef struct s_arg {
