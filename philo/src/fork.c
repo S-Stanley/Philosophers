@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/04 00:08:18 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/11 23:48:02 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/12 01:12:11 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,8 @@ t_dishes	*add_fork(t_dishes *fork, unsigned int i)
 	if (!new)
 		return (fork);
 	new->id = i;
-	new ->next = NULL;
+	new->fork = malloc(sizeof(pthread_mutex_t));
+	new->next = NULL;
 	if (!fork)
 		return (new);
 	tmp = fork;
