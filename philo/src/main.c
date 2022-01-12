@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/12 23:08:23 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/12 23:11:34 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ void	ft_philo(t_arg arg)
 		i++;
 	}
 	destroy_mutex(forks, arg.nbr_philo);
+	free(forks);
 }
 
 int	main(int argc, char **argv)
