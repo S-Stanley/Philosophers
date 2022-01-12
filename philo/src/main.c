@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/12 23:58:36 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/12 23:59:41 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,6 +166,7 @@ void	ft_philo(t_arg arg)
 	destroy_mutex(forks, arg.nbr_philo);
 	free(forks);
 	free(commun_mutex);
+	free(stop);
 }
 
 int	main(int argc, char **argv)
