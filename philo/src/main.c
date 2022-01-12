@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/12 23:36:53 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/12 23:40:56 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,22 +31,26 @@ void	lock_fork(t_data *data)
 {
 	if (data->id == data->nbr_philo)
 	{
-		pthread_mutex_lock(data->commun_mutex);
 		pthread_mutex_lock(&data->forks[data->id - 1]);
+		pthread_mutex_lock(data->commun_mutex);
 		printf("%ld philo %d has taken a fork\n",
 			get_time(data->prog_time_start), data->id);
+		pthread_mutex_unlock(data->commun_mutex);
 		pthread_mutex_lock(&data->forks[0]);
+		pthread_mutex_lock(data->commun_mutex);
 		printf("%ld philo %d has taken a fork\n",
 			get_time(data->prog_time_start), data->id);
 		pthread_mutex_unlock(data->commun_mutex);
 	}
 	else
 	{
-		pthread_mutex_lock(data->commun_mutex);
 		pthread_mutex_lock(&data->forks[data->id - 1]);
+		pthread_mutex_lock(data->commun_mutex);
 		printf("%ld philo %d has taken a fork\n",
 			get_time(data->prog_time_start), data->id);
+		pthread_mutex_unlock(data->commun_mutex);
 		pthread_mutex_lock(&data->forks[data->id]);
+		pthread_mutex_lock(data->commun_mutex);
 		printf("%ld philo %d has taken a fork\n",
 			get_time(data->prog_time_start), data->id);
 		pthread_mutex_unlock(data->commun_mutex);
