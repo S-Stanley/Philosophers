@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/13 21:48:33 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/13 21:51:12 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,10 +206,7 @@ void	*routine(void *arg)
 
 	data = (t_data *)arg;
 	if (gettimeofday(&start_time, NULL) == -1)
-	{
-		free(arg);
 		return (arg);
-	}
 	if (data->id % 2)
 		ft_sleep(data->t_eat, data, start_time);
 	ate = 0;
@@ -337,6 +334,14 @@ void	ft_philo(t_arg arg, int *stop, pthread_mutex_t *commun_mutex)
 	free(forks);
 }
 
+int	exit_err_main(int *stop, pthread_mutex_t *commun_mutex, int mode)
+{
+	if (mode > 0)
+		free(stop);
+	free(commun_mutex);
+	return (0);
+}
+
 int	main(int argc, char **argv)
 {
 	t_arg			arg;
@@ -354,22 +359,13 @@ int	main(int argc, char **argv)
 	stop[0] = 0;
 	commun_mutex = malloc(sizeof(pthread_mutex_t));
 	if (!commun_mutex)
-	{
-		free(stop);
-		return (0);
-	}
+		return (exit_err_main(stop, commun_mutex, 0));
 	if (pthread_mutex_init(commun_mutex, NULL) != 0)
-	{
-		free(commun_mutex);
-		free(stop);
-		return (0);
-	}
+		return (exit_err_main(stop, commun_mutex, 1));
 	if (arg.nbr_philo == 1)
 		one_philo(arg, stop, commun_mutex);
 	else
 		ft_philo(arg, stop, commun_mutex);
 	pthread_mutex_destroy(commun_mutex);
-	free(commun_mutex);
-	free(stop);
-	return (0);
+	return (exit_err_main(stop, commun_mutex, 1));
 }
