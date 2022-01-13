@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/13 00:08:46 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/13 01:40:18 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,46 @@ long int	get_time(struct timeval time)
 		return ((
 				((max - time.tv_usec) + now.tv_usec)
 				+ ((now.tv_sec - time.tv_sec -1) * max)) / 1000);
+}
+
+BOOL	check_philo_life(struct timeval start_time, t_data *data)
+{
+	if (data->stop[0])
+	{
+		pthread_mutex_unlock(data->commun_mutex);
+		return (FALSE);
+	}
+	if (get_time(start_time) > (unsigned int)data->t_die)
+	{
+		data->stop[0] = 1;
+		printf("%ld\n", get_time(start_time));
+		printf("%ld philo %d died\n", get_time(data->prog_time_start), data->id);
+		pthread_mutex_unlock(data->commun_mutex);
+		return (FALSE);
+	}
+	return (TRUE);
+}
+
+BOOL	ft_sleep(long int sleepingtime, t_data *data, struct timeval start_time)
+{
+	int		timeleft;
+
+	timeleft = data->t_die - get_time(start_time);
+	if (timeleft > sleepingtime)
+		usleep(sleepingtime * 1000);
+	else
+	{
+		while (sleepingtime > 0)
+		{
+			pthread_mutex_lock(data->commun_mutex);
+			if (!check_philo_life(start_time, data))
+				return (FALSE);
+			pthread_mutex_unlock(data->commun_mutex);
+			usleep(10 * 1000);
+			sleepingtime = sleepingtime - 10;
+		}
+	}
+	return (TRUE);
 }
 
 BOOL	print_something(t_data *data, int content, struct timeval *start_time)
@@ -128,62 +168,88 @@ void	*routine(void *arg)
 	return (arg);
 }
 
-void	ft_philo(t_arg arg)
+t_data	*init_philo(pthread_mutex_t *forks, struct timeval prog_time_start, pthread_mutex_t *commun_mutex, t_arg arg)
+{
+	t_data			*data;
+
+	data = malloc(sizeof(t_data));
+	data->forks = forks;
+	data->prog_time_start = prog_time_start;
+	data->t_eat = arg.t_eat;
+	data->t_sleep = arg.t_sleep;
+	data->t_die = arg.t_die;
+	data->max_t_eat = arg.max_t_eat;
+	data->nbr_philo = arg.nbr_philo;
+	data->commun_mutex = commun_mutex;
+	return (data);
+}
+
+void	ft_philo(t_arg arg, int *stop, pthread_mutex_t *commun_mutex)
 {
 	pthread_t		threads[arg.nbr_philo];
 	void			*forks;
-	unsigned int	i;
-	t_data			*data;
+	int				i;
 	struct timeval	prog_time_start;
-	pthread_mutex_t	*commun_mutex;
-	int				*stop;
+	t_data			*data;
 
-	stop = malloc(sizeof(int));
-	stop[0] = 0;
-	commun_mutex = malloc(sizeof(pthread_mutex_t));
-	i = 0;
+	i = -1;
 	forks = malloc(sizeof(pthread_mutex_t) * arg.nbr_philo);
 	init_mutex(forks, arg.nbr_philo);
-	pthread_mutex_init(commun_mutex, NULL);
 	gettimeofday(&prog_time_start, NULL);
-	while (i < arg.nbr_philo)
+	while ((unsigned int)++i < arg.nbr_philo)
 	{
-		data = malloc(sizeof(t_data));
-		data->id = i + 1;
-		data->forks = forks;
-		data->prog_time_start = prog_time_start;
-		data->t_eat = arg.t_eat;
-		data->t_sleep = arg.t_sleep;
-		data->t_die = arg.t_die;
-		data->max_t_eat = arg.max_t_eat;
-		data->nbr_philo = arg.nbr_philo;
-		data->commun_mutex = commun_mutex;
+		data = init_philo(forks, prog_time_start, commun_mutex, arg);
 		data->stop = stop;
+		data->id = i + 1;
 		pthread_create(&threads[i], NULL, routine, data);
-		i++;
 	}
-	i = 0;
-	while (i < arg.nbr_philo)
+	i = -1;
+	while ((unsigned int)++i < arg.nbr_philo)
 	{
 		pthread_join(threads[i], NULL);
-		i++;
 	}
-	pthread_mutex_destroy(commun_mutex);
 	destroy_mutex(forks, arg.nbr_philo);
 	free(forks);
-	free(commun_mutex);
-	free(stop);
+}
+
+void	one_philo(t_arg arg, int *stop, pthread_mutex_t *commun_mutex)
+{
+	struct timeval	start_time;
+	t_data			*data;
+
+	data = malloc(sizeof(t_data));
+	gettimeofday(&start_time, NULL);
+	data->t_die = arg.t_die;
+	data->commun_mutex = commun_mutex;
+	data->prog_time_start = start_time;
+	data->stop = stop;
+	data->id = 1;
+	printf("%ld philo %d as taken a fork\n", get_time(start_time), data->id);
+	ft_sleep(data->t_die + 1, data, start_time);
+	free(data);
 }
 
 int	main(int argc, char **argv)
 {
 	t_arg			arg;
+	pthread_mutex_t	*commun_mutex;
+	int				*stop;
 
 	if (check_error_arg(argc, argv))
 		return (0);
 	arg = setup_arg(argc, argv);
 	if (!is_arg_correct(argv, arg, argc))
 		return (0);
-	ft_philo(arg);
+	stop = malloc(sizeof(int));
+	stop[0] = 0;
+	commun_mutex = malloc(sizeof(pthread_mutex_t));
+	pthread_mutex_init(commun_mutex, NULL);
+	if (arg.nbr_philo == 1)
+		one_philo(arg, stop, commun_mutex);
+	else
+		ft_philo(arg, stop, commun_mutex);
+	pthread_mutex_destroy(commun_mutex);
+	free(commun_mutex);
+	free(stop);
 	return (0);
 }
