@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/13 19:25:29 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/13 20:44:05 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,7 +207,6 @@ void	*routine(void *arg)
 		if (!print_something(data, 3, &start_time))
 			break ;
 	}
-	free(arg);
 	return (arg);
 }
 
@@ -215,7 +214,7 @@ t_data	*init_philo(pthread_mutex_t *forks, struct timeval prog_time_start, pthre
 {
 	t_data			*data;
 
-	data = malloc(sizeof(t_data));
+	data = malloc(sizeof(*data));
 	if (!data)
 		return (NULL);
 	data->forks = forks;
@@ -231,17 +230,17 @@ t_data	*init_philo(pthread_mutex_t *forks, struct timeval prog_time_start, pthre
 	return (data);
 }
 
-t_data	*add_tmp(t_data *buffer, t_data *new)
+t_data	*add_tmp(t_data *tmp, t_data *new)
 {
-	t_data	*tmp;
+	t_data	*buffer;
 
-	if (!buffer)
+	if (!tmp)
 		return (new);
-	tmp = buffer;
-	while (buffer->next)
-		buffer = buffer->next;
-	buffer->next = new;
-	return (tmp);
+	buffer = tmp;
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = new;
+	return (buffer);
 }
 
 void	free_data(t_data *data)
@@ -251,6 +250,7 @@ void	free_data(t_data *data)
 	while (data)
 	{
 		tmp = data->next;
+		free(data->thread);
 		free(data);
 		data = tmp;
 	}
@@ -263,6 +263,7 @@ void	ft_philo(t_arg arg, int *stop, pthread_mutex_t *commun_mutex)
 	struct timeval	prog_time_start;
 	t_data			*data;
 	t_data			*tmp;
+	t_data			*data_to_free;
 
 	i = -1;
 	forks = malloc(sizeof(pthread_mutex_t) * arg.nbr_philo);
@@ -302,6 +303,7 @@ void	ft_philo(t_arg arg, int *stop, pthread_mutex_t *commun_mutex)
 		}
 	}
 	i = -1;
+	data_to_free = tmp;
 	while ((unsigned int)++i < arg.nbr_philo)
 	{
 		if (pthread_join(*tmp->thread, NULL) != 0)
@@ -311,6 +313,7 @@ void	ft_philo(t_arg arg, int *stop, pthread_mutex_t *commun_mutex)
 		}
 		tmp = tmp->next;
 	}
+	free_data(data_to_free);
 	destroy_mutex(forks, arg.nbr_philo);
 	free(forks);
 }
