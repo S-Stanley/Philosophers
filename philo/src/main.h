@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 22:53:19 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/12 23:54:33 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/13 18:38:20 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,6 @@
 # include <sys/time.h>
 # include <unistd.h>
 
-// # define NB_PHILO		4
-// # define TIME_TO_DIE	410
-// # define TIME_TO_SLEEP	200
-// # define TIME_TO_EAT	200
-// # define MAX_TIME_EAT	5
 # define BOOL	int
 # define TRUE	1
 # define FALSE	0
@@ -39,6 +34,7 @@ typedef struct s_data {
 	unsigned int	nbr_philo;
 	pthread_mutex_t	*commun_mutex;
 	int				*stop;
+	pthread_t		thread;
 }	t_data;
 
 typedef struct s_arg {
@@ -49,12 +45,16 @@ typedef struct s_arg {
 	int				max_t_eat;
 }	t_arg;
 
-int		ft_strlen(const char *str);
-BOOL	is_arg_correct(char **argv, t_arg arg, int argc);
-BOOL	check_error_arg(int argc, char **argv);
-t_arg	setup_arg(int argc, char **argv);
-void	init_mutex(pthread_mutex_t *forks, unsigned int nbr_philo);
-void	destroy_mutex(pthread_mutex_t *forks, unsigned int nbr_philo);
-int		ft_atoi(const char *str);
+int			ft_strlen(const char *str);
+BOOL		is_arg_correct(char **argv, t_arg arg, int argc);
+BOOL		check_error_arg(int argc, char **argv);
+t_arg		setup_arg(int argc, char **argv);
+BOOL		init_mutex(pthread_mutex_t *forks, unsigned int nbr_philo);
+void		destroy_mutex(pthread_mutex_t *forks, unsigned int nbr_philo);
+int			ft_atoi(const char *str);
+void		one_philo(t_arg arg, int *stop, pthread_mutex_t *commun_mutex);
+long int	get_time(struct timeval time);
+BOOL		check_philo_life(struct timeval start_time, t_data *data);
+BOOL		ft_sleep(long int sleepingtime, t_data *data, struct timeval start_time);
 
 #endif
