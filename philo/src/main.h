@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 22:53:19 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/13 19:24:47 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/13 22:10:07 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,5 +58,22 @@ long int	get_time(struct timeval time);
 BOOL		check_philo_life(struct timeval start_time, t_data *data);
 BOOL		ft_sleep(long int sleepingtime,
 				t_data *data, struct timeval start_time);
+int			exit_err_main(int *stop, pthread_mutex_t *commun_mutex, int mode);
+void		exit_err_ft_philo(int *stop, void *forks, t_data *tmp, t_arg arg);
+void		free_data(t_data *data);
+BOOL		print_something(t_data *data,
+				int content, struct timeval *start_time);
+void		print_content(t_data *data, int content);
+BOOL		lock_fork(t_data *data, struct timeval *start_time);
+void		unlock_fork(t_data *data);
+void		*setup_fork(t_arg arg);
+t_data		*init_philo(pthread_mutex_t *forks, struct timeval prog_time_start,
+				pthread_mutex_t *commun_mutex, t_arg arg);
+void		ft_philo(t_arg arg, int *stop, pthread_mutex_t *commun_mutex);
+void		*routine(void *arg);
+long int	get_time(struct timeval time);
+BOOL		check_philo_life(struct timeval start_time, t_data *data);
+BOOL		ft_sleep(long int sleepingtime, t_data *data,
+				struct timeval start_time);
 
 #endif
