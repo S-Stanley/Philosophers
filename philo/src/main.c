@@ -6,11 +6,20 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/13 22:07:18 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/13 22:29:03 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
+
+void	unlock_fork(t_data *data)
+{
+	pthread_mutex_unlock(&data->forks[data->id - 1]);
+	if (data->id == data->nbr_philo)
+		pthread_mutex_unlock(&data->forks[0]);
+	else
+		pthread_mutex_unlock(&data->forks[data->id]);
+}
 
 long int	get_time(struct timeval time)
 {

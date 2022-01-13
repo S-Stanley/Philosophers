@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 22:53:19 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/13 22:10:07 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/13 22:29:13 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,5 +75,6 @@ long int	get_time(struct timeval time);
 BOOL		check_philo_life(struct timeval start_time, t_data *data);
 BOOL		ft_sleep(long int sleepingtime, t_data *data,
 				struct timeval start_time);
+void		unlock_fork(t_data *data);
 
 #endif
