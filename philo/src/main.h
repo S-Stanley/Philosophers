@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 22:53:19 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/13 18:59:08 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/13 19:24:47 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ typedef struct s_data {
 	unsigned int	nbr_philo;
 	pthread_mutex_t	*commun_mutex;
 	int				*stop;
-	pthread_t		thread;
+	pthread_t		*thread;
+	struct s_data	*next;
 }	t_data;
 
 typedef struct s_arg {

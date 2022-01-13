@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/13 19:07:23 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/13 19:25:29 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ BOOL	check_philo_life(struct timeval start_time, t_data *data)
 	if (get_time(start_time) > (unsigned int)data->t_die)
 	{
 		data->stop[0] = 1;
-		printf("%ld\n", get_time(start_time));
 		printf("%ld philo %d died\n", get_time(data->prog_time_start), data->id);
 		pthread_mutex_unlock(data->commun_mutex);
 		return (FALSE);
@@ -227,7 +226,34 @@ t_data	*init_philo(pthread_mutex_t *forks, struct timeval prog_time_start, pthre
 	data->max_t_eat = arg.max_t_eat;
 	data->nbr_philo = arg.nbr_philo;
 	data->commun_mutex = commun_mutex;
+	data->next = NULL;
+	data->thread = malloc(sizeof(pthread_t));
 	return (data);
+}
+
+t_data	*add_tmp(t_data *buffer, t_data *new)
+{
+	t_data	*tmp;
+
+	if (!buffer)
+		return (new);
+	tmp = buffer;
+	while (buffer->next)
+		buffer = buffer->next;
+	buffer->next = new;
+	return (tmp);
+}
+
+void	free_data(t_data *data)
+{
+	t_data	*tmp;
+
+	while (data)
+	{
+		tmp = data->next;
+		free(data);
+		data = tmp;
+	}
 }
 
 void	ft_philo(t_arg arg, int *stop, pthread_mutex_t *commun_mutex)
@@ -236,6 +262,7 @@ void	ft_philo(t_arg arg, int *stop, pthread_mutex_t *commun_mutex)
 	int				i;
 	struct timeval	prog_time_start;
 	t_data			*data;
+	t_data			*tmp;
 
 	i = -1;
 	forks = malloc(sizeof(pthread_mutex_t) * arg.nbr_philo);
@@ -251,20 +278,22 @@ void	ft_philo(t_arg arg, int *stop, pthread_mutex_t *commun_mutex)
 		destroy_mutex(forks, arg.nbr_philo);
 		free(forks);
 	}
+	tmp = NULL;
 	while ((unsigned int)++i < arg.nbr_philo)
 	{
 		data = init_philo(forks, prog_time_start, commun_mutex, arg);
 		if (!data)
 		{
 			destroy_mutex(forks, arg.nbr_philo);
-			// data = NULL;?
-			// free_that_matrice(data);
+			tmp = NULL;
+			free_data(tmp);
 			free(forks);
 			return ;
 		}
 		data->stop = stop;
 		data->id = i + 1;
-		if (pthread_create(&data->thread, NULL, routine, data) != 0)
+		tmp = add_tmp(tmp, data);
+		if (pthread_create(data->thread, NULL, routine, data) != 0)
 		{
 			stop[0] = 1;
 			destroy_mutex(forks, arg.nbr_philo);
@@ -275,11 +304,12 @@ void	ft_philo(t_arg arg, int *stop, pthread_mutex_t *commun_mutex)
 	i = -1;
 	while ((unsigned int)++i < arg.nbr_philo)
 	{
-		if (pthread_join(data->thread, NULL) != 0)
+		if (pthread_join(*tmp->thread, NULL) != 0)
 		{
 			stop[0] = 1;
 			break ;
 		}
+		tmp = tmp->next;
 	}
 	destroy_mutex(forks, arg.nbr_philo);
 	free(forks);
