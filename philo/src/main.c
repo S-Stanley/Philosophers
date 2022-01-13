@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/13 20:44:05 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/13 21:05:55 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ BOOL	print_something(t_data *data, int content, struct timeval *start_time)
 		pthread_mutex_unlock(data->commun_mutex);
 		return (FALSE);
 	}
-	if (get_time(*start_time) >= data->t_die)
+	if (get_time(*start_time) > data->t_die)
 	{
 		data->stop[0] = 1;
 		printf("%ld philo %u died\n", get_time(data->prog_time_start), data->id);
@@ -159,7 +159,7 @@ BOOL	eating(t_data *data, struct timeval *start_time)
 {
 	if (!lock_fork(data, start_time))
 		return (FALSE);
-	if (get_time(*start_time) >= data->t_die)
+	if (get_time(*start_time) > data->t_die)
 	{
 		if (pthread_mutex_lock(data->commun_mutex) != 0)
 			return (FALSE);
