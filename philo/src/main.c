@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/13 21:45:04 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/13 21:48:33 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,49 +104,63 @@ BOOL	print_something(t_data *data, int content, struct timeval *start_time)
 	return (TRUE);
 }
 
+BOOL	lock_fork_last(t_data *data, struct timeval *start_time)
+{
+	if (pthread_mutex_lock(&data->forks[data->id - 1]) != 0)
+		return (FALSE);
+	if (!print_something(data, 0, start_time))
+	{
+		pthread_mutex_unlock(&data->forks[data->id - 1]);
+		return (FALSE);
+	}
+	if (pthread_mutex_lock(&data->forks[0]) != 0)
+	{
+		pthread_mutex_unlock(&data->forks[data->id - 1]);
+		return (FALSE);
+	}
+	if (!print_something(data, 0, start_time))
+	{
+		pthread_mutex_unlock(&data->forks[data->id - 1]);
+		pthread_mutex_unlock(&data->forks[data->id]);
+		return (FALSE);
+	}
+	return (TRUE);
+}
+
+BOOL	lock_fork_middle(t_data *data, struct timeval *start_time)
+{
+	if (pthread_mutex_lock(&data->forks[data->id - 1]) != 0)
+		return (FALSE);
+	if (!print_something(data, 0, start_time))
+	{
+		pthread_mutex_unlock(&data->forks[data->id - 1]);
+		return (FALSE);
+	}
+	if (pthread_mutex_lock(&data->forks[data->id]) != 0)
+	{
+		pthread_mutex_unlock(&data->forks[data->id - 1]);
+		return (FALSE);
+	}
+	if (!print_something(data, 0, start_time))
+	{
+		pthread_mutex_unlock(&data->forks[data->id - 1]);
+		pthread_mutex_unlock(&data->forks[data->id]);
+		return (FALSE);
+	}
+	return (TRUE);
+}
+
 BOOL	lock_fork(t_data *data, struct timeval *start_time)
 {
 	if (data->id == data->nbr_philo)
 	{
-		if (pthread_mutex_lock(&data->forks[data->id - 1]) != 0)
+		if (!lock_fork_last(data, start_time))
 			return (FALSE);
-		if (!print_something(data, 0, start_time))
-		{
-			pthread_mutex_unlock(&data->forks[data->id - 1]);
-			return (FALSE);
-		}
-		if (pthread_mutex_lock(&data->forks[0]) != 0)
-		{
-			pthread_mutex_unlock(&data->forks[data->id - 1]);
-			return (FALSE);
-		}
-		if (!print_something(data, 0, start_time))
-		{
-			pthread_mutex_unlock(&data->forks[data->id - 1]);
-			pthread_mutex_unlock(&data->forks[data->id]);
-			return (FALSE);
-		}
 	}
 	else
 	{
-		if (pthread_mutex_lock(&data->forks[data->id - 1]) != 0)
+		if (!lock_fork_middle(data, start_time))
 			return (FALSE);
-		if (!print_something(data, 0, start_time))
-		{
-			pthread_mutex_unlock(&data->forks[data->id - 1]);
-			return (FALSE);
-		}
-		if (pthread_mutex_lock(&data->forks[data->id]) != 0)
-		{
-			pthread_mutex_unlock(&data->forks[data->id - 1]);
-			return (FALSE);
-		}
-		if (!print_something(data, 0, start_time))
-		{
-			pthread_mutex_unlock(&data->forks[data->id - 1]);
-			pthread_mutex_unlock(&data->forks[data->id]);
-			return (FALSE);
-		}
 	}
 	return (TRUE);
 }
