@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/13 21:05:55 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/13 21:45:04 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,22 @@ BOOL	ft_sleep(long int sleepingtime, t_data *data, struct timeval start_time)
 	return (TRUE);
 }
 
+void	print_content(t_data *data, int content)
+{
+	if (content == 0)
+		printf("%ld philo %u has taken a fork\n",
+			get_time(data->prog_time_start), data->id);
+	if (content == 1)
+		printf("%ld philo %u is eating\n",
+			get_time(data->prog_time_start), data->id);
+	if (content == 2)
+		printf("%ld philo %u is sleeping\n",
+			get_time(data->prog_time_start), data->id);
+	if (content == 3)
+		printf("%ld philo %u is thinking\n",
+			get_time(data->prog_time_start), data->id);
+}
+
 BOOL	print_something(t_data *data, int content, struct timeval *start_time)
 {
 	if (pthread_mutex_lock(data->commun_mutex) != 0)
@@ -82,18 +98,7 @@ BOOL	print_something(t_data *data, int content, struct timeval *start_time)
 		pthread_mutex_unlock(data->commun_mutex);
 		return (FALSE);
 	}
-	if (content == 0)
-		printf("%ld philo %u has taken a fork\n",
-			get_time(data->prog_time_start), data->id);
-	if (content == 1)
-		printf("%ld philo %u is eating\n",
-			get_time(data->prog_time_start), data->id);
-	if (content == 2)
-		printf("%ld philo %u is sleeping\n",
-			get_time(data->prog_time_start), data->id);
-	if (content == 3)
-		printf("%ld philo %u is thinking\n",
-			get_time(data->prog_time_start), data->id);
+	print_content(data, content);
 	if (pthread_mutex_unlock(data->commun_mutex) != 0)
 		return (FALSE);
 	return (TRUE);
