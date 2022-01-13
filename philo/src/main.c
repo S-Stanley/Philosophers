@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/13 19:05:40 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/13 19:07:23 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,7 +193,7 @@ void	*routine(void *arg)
 		return (arg);
 	}
 	if (data->id % 2)
-		usleep(200 * 1000);
+		ft_sleep(data->t_eat, data, start_time);
 	ate = 0;
 	while (1)
 	{
