@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/13 21:51:12 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/13 21:59:48 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,52 +272,11 @@ void	free_data(t_data *data)
 	}
 }
 
-void	ft_philo(t_arg arg, int *stop, pthread_mutex_t *commun_mutex)
+void	join_philo(t_arg arg, t_data *tmp, void *forks, int *stop)
 {
-	void			*forks;
 	int				i;
-	struct timeval	prog_time_start;
-	t_data			*data;
-	t_data			*tmp;
 	t_data			*data_to_free;
 
-	i = -1;
-	forks = malloc(sizeof(pthread_mutex_t) * arg.nbr_philo);
-	if (!forks)
-		return ;
-	if (!init_mutex(forks, arg.nbr_philo))
-	{
-		free(forks);
-		return ;
-	}
-	if (gettimeofday(&prog_time_start, NULL) == -1)
-	{
-		destroy_mutex(forks, arg.nbr_philo);
-		free(forks);
-	}
-	tmp = NULL;
-	while ((unsigned int)++i < arg.nbr_philo)
-	{
-		data = init_philo(forks, prog_time_start, commun_mutex, arg);
-		if (!data)
-		{
-			destroy_mutex(forks, arg.nbr_philo);
-			tmp = NULL;
-			free_data(tmp);
-			free(forks);
-			return ;
-		}
-		data->stop = stop;
-		data->id = i + 1;
-		tmp = add_tmp(tmp, data);
-		if (pthread_create(data->thread, NULL, routine, data) != 0)
-		{
-			stop[0] = 1;
-			destroy_mutex(forks, arg.nbr_philo);
-			free(forks);
-			return ;
-		}
-	}
 	i = -1;
 	data_to_free = tmp;
 	while ((unsigned int)++i < arg.nbr_philo)
@@ -332,6 +291,60 @@ void	ft_philo(t_arg arg, int *stop, pthread_mutex_t *commun_mutex)
 	free_data(data_to_free);
 	destroy_mutex(forks, arg.nbr_philo);
 	free(forks);
+}
+
+void	*setup_fork(t_arg arg)
+{
+	void			*forks;
+
+	forks = malloc(sizeof(pthread_mutex_t) * arg.nbr_philo);
+	if (!forks)
+		return (NULL);
+	if (!init_mutex(forks, arg.nbr_philo))
+	{
+		free(forks);
+		return (NULL);
+	}
+	return (forks);
+}
+
+void	exit_err_ft_philo(int *stop, void *forks, t_data *tmp, t_arg arg)
+{
+	if (stop)
+		stop[0] = 1;
+	destroy_mutex(forks, arg.nbr_philo);
+	if (tmp)
+		free_data(tmp);
+	free(forks);
+}
+
+void	ft_philo(t_arg arg, int *stop, pthread_mutex_t *commun_mutex)
+{
+	int				i;
+	struct timeval	prog_time_start;
+	t_data			*data;
+	t_data			*tmp;
+	void			*forks;
+
+	i = -1;
+	forks = setup_fork(arg);
+	if (!forks)
+		return ;
+	tmp = NULL;
+	if (gettimeofday(&prog_time_start, NULL) == -1)
+		return (exit_err_ft_philo(stop, forks, tmp, arg));
+	while ((unsigned int)++i < arg.nbr_philo)
+	{
+		data = init_philo(forks, prog_time_start, commun_mutex, arg);
+		if (!data)
+			return (exit_err_ft_philo(stop, forks, tmp, arg));
+		data->stop = stop;
+		data->id = i + 1;
+		tmp = add_tmp(tmp, data);
+		if (pthread_create(data->thread, NULL, routine, data) != 0)
+			return (exit_err_ft_philo(stop, forks, tmp, arg));
+	}
+	join_philo(arg, tmp, forks, stop);
 }
 
 int	exit_err_main(int *stop, pthread_mutex_t *commun_mutex, int mode)
