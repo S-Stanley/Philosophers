@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/11 23:48:31 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/13 18:53:32 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/13 19:05:40 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,15 +69,17 @@ BOOL	ft_sleep(long int sleepingtime, t_data *data, struct timeval start_time)
 
 BOOL	print_something(t_data *data, int content, struct timeval *start_time)
 {
-	pthread_mutex_lock(data->commun_mutex);
-	if (get_time(*start_time) >= data->t_die)
+	if (pthread_mutex_lock(data->commun_mutex) != 0)
+		return (FALSE);
+	if (data->stop[0])
 	{
-		printf("%ld philo %u died\n", get_time(data->prog_time_start), data->id);
 		pthread_mutex_unlock(data->commun_mutex);
 		return (FALSE);
 	}
-	if (data->stop[0])
+	if (get_time(*start_time) >= data->t_die)
 	{
+		data->stop[0] = 1;
+		printf("%ld philo %u died\n", get_time(data->prog_time_start), data->id);
 		pthread_mutex_unlock(data->commun_mutex);
 		return (FALSE);
 	}
@@ -93,7 +95,8 @@ BOOL	print_something(t_data *data, int content, struct timeval *start_time)
 	if (content == 3)
 		printf("%ld philo %u is thinking\n",
 			get_time(data->prog_time_start), data->id);
-	pthread_mutex_unlock(data->commun_mutex);
+	if (pthread_mutex_unlock(data->commun_mutex) != 0)
+		return (FALSE);
 	return (TRUE);
 }
 
@@ -153,26 +156,28 @@ void	unlock_fork(t_data *data)
 		pthread_mutex_unlock(&data->forks[data->id]);
 }
 
-void	eating(t_data *data, struct timeval *start_time)
+BOOL	eating(t_data *data, struct timeval *start_time)
 {
 	if (!lock_fork(data, start_time))
-		return ;
+		return (FALSE);
 	if (get_time(*start_time) >= data->t_die)
 	{
 		if (pthread_mutex_lock(data->commun_mutex) != 0)
-			return ;
+			return (FALSE);
 		printf("%ld philo %u died\n", get_time(data->prog_time_start), data->id);
 		pthread_mutex_unlock(data->commun_mutex);
-		exit(0);
+		return (FALSE);
 	}
 	if (!print_something(data, 1, start_time))
 	{
 		unlock_fork(data);
-		return ;
+		return (FALSE);
 	}
-	gettimeofday(start_time, NULL);
-	usleep(data->t_eat * 1000);
+	if (gettimeofday(start_time, NULL) == -1)
+		return (FALSE);
+	ft_sleep(data->t_eat, data, *start_time);
 	unlock_fork(data);
+	return (TRUE);
 }
 
 void	*routine(void *arg)
@@ -192,13 +197,14 @@ void	*routine(void *arg)
 	ate = 0;
 	while (1)
 	{
-		eating(data, &start_time);
+		if (!eating(data, &start_time))
+			break ;
 		ate++;
 		if (data->max_t_eat > 0 && ate == data->max_t_eat)
 			break ;
 		if (!print_something(data, 2, &start_time))
 			break ;
-		usleep(data->t_sleep * 1000);
+		ft_sleep(data->t_sleep, data, start_time);
 		if (!print_something(data, 3, &start_time))
 			break ;
 	}

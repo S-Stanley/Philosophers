@@ -6,7 +6,7 @@
 /*   By: sserbin <sserbin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 22:53:19 by sserbin           #+#    #+#             */
-/*   Updated: 2022/01/13 18:38:20 by sserbin          ###   ########.fr       */
+/*   Updated: 2022/01/13 18:59:08 by sserbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ int			ft_atoi(const char *str);
 void		one_philo(t_arg arg, int *stop, pthread_mutex_t *commun_mutex);
 long int	get_time(struct timeval time);
 BOOL		check_philo_life(struct timeval start_time, t_data *data);
-BOOL		ft_sleep(long int sleepingtime, t_data *data, struct timeval start_time);
+BOOL		ft_sleep(long int sleepingtime,
+				t_data *data, struct timeval start_time);
 
 #endif
